@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="11">
+ <tileset firstgid="1" source="tileset1.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJzt16ERACAMADEc9GBvYGs6BTURr6O/z9ZGUZHt7BR1+Xw+n8/n8/l8Pp/P/+T3lS9cVGQPOYssPw==
+  </data>
+ </layer>
+ <objectgroup id="2" name="collision">
+  <object id="4" type="COLLISION" x="129.333" y="864" width="29.3333" height="64"/>
+  <object id="6" type="COLLISION" x="-53.3333" y="1025.33" width="1141.33" height="62.6667"/>
+  <object id="7" type="COLLISION" x="-113.333" y="-50.6667" width="112" height="1114.67"/>
+  <object id="8" type="COLLISION" x="1026.67" y="-32" width="62.6667" height="1106.67"/>
+  <object id="9" type="COLLISION" x="-50.6667" y="-53.3333" width="1125.33" height="52"/>
+  <object id="10" type="COLLISION" x="254.667" y="580" width="240" height="274.667"/>
+ </objectgroup>
+ <layer id="3" name="Tile Layer 2" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztzTERAAAIBCALeEa3si38BQpQBQAAQMJ09t/wz68DgnUAuQ==
+  </data>
+ </layer>
+</map>
