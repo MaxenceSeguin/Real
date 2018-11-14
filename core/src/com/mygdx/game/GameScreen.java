@@ -31,7 +31,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Sprite heroSprite;
 
 
-    protected GameScreen(Game aGame) {
+    private GameScreen(Game aGame) {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
