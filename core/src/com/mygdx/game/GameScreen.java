@@ -18,7 +18,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-/**mmm
+/**
  * Created by julienvillegas on 17/01/2017.
  */
 public class GameScreen implements Screen, InputProcessor {
