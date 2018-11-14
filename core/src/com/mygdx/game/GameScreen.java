@@ -18,20 +18,20 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-/**
+/**mmm
  * Created by julienvillegas on 17/01/2017.
  */
 public class GameScreen implements Screen, InputProcessor {
 
     private OrthographicCamera camera;
-    TiledMap tiledMap;
-    TiledMapRenderer tiledMapRenderer;
-    SpriteBatch sb;
-    Hero hero;
-    Sprite heroSprite;
+    private TiledMap tiledMap;
+    private TiledMapRenderer tiledMapRenderer;
+    private SpriteBatch sb;
+    private Hero hero;
+    private Sprite heroSprite;
 
 
-    public GameScreen(Game aGame) {
+    protected GameScreen(Game aGame) {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
@@ -93,7 +93,7 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
 
-    public boolean isCollision(int dx, int dy){
+    private boolean isCollision(int dx, int dy){
         int objectLayerId = 1;
         MapLayer collisionObjectLayer = tiledMap.getLayers().get(objectLayerId);
         MapObjects objects = collisionObjectLayer.getObjects();
