@@ -6,8 +6,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -28,6 +31,10 @@ public class GameScreen implements Screen, InputProcessor {
     private Hero hero;
     private Sprite heroSprite;
 
+    private TextureAtlas textureAtlas;
+    private Animation animation;
+    private float elapsedTime = 0f;
+
 
     public GameScreen(Game aGame) {
         float w = Gdx.graphics.getWidth();
@@ -46,6 +53,9 @@ public class GameScreen implements Screen, InputProcessor {
 
         hero = new Hero("hero1.png", 0, 0);
         heroSprite = hero.getSprite();
+
+        textureAtlas = new TextureAtlas(Gdx.files.internal("anim1.atlas"));
+        animation = new Animation(1f/15f, textureAtlas.getRegions());
     }
 
     @Override
@@ -67,22 +77,32 @@ public class GameScreen implements Screen, InputProcessor {
 
         sb.setProjectionMatrix(camera.combined);
         sb.begin();
-        heroSprite.draw(sb);
-        heroMovement();
+
+        if (heroMovement()){
+            elapsedTime += Gdx.graphics.getDeltaTime();
+            sb.draw((TextureAtlas.AtlasRegion)animation.getKeyFrame(elapsedTime,true),heroSprite.getX(),heroSprite.getY());
+        } else {
+            heroSprite.draw(sb);
+        }
         sb.end();
+
+
     }
 
     /**
      * This methods checks if the hero has to move.
      * If so it also checks if the hero will enter in collision with any object
      * in the COLLISION layer.
+     * If not, then the hero will move and activate the moving state by returning true.
      */
-    private void heroMovement(){
+    private boolean heroMovement(){
         if (hero.isMoving() && !isCollision(hero.getDx(), hero.getDy())){
             heroSprite.setPosition(heroSprite.getX()+hero.getDx(), heroSprite.getY()+hero.getDy());
             camera.position.x = Math.max(Math.min(heroSprite.getX(), 1024 - camera.viewportWidth/2), camera.viewportWidth/2);
             camera.position.y = Math.max(Math.min(heroSprite.getY(), 1024 - camera.viewportHeight/2), camera.viewportHeight/2);
+            return true;
         }
+        return false;
     }
 
 
