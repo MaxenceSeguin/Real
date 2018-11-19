@@ -8,6 +8,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 public class Hero extends Image {
     private int dx, dy;
     private Sprite sprite;
+    private boolean isOnBridge=false;
+
+    public boolean isOnBridge() {
+        return isOnBridge;
+    }
+
+    public void setOnBridge(boolean onBridge) {
+        isOnBridge = onBridge;
+    }
 
     public Hero(String path, int x, int y){
         Texture texture = new Texture(Gdx.files.internal(path));

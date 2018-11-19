@@ -6,7 +6,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,6 +29,7 @@ public class GameScreen implements Screen, InputProcessor {
     private SpriteBatch sb;
     private Hero hero;
     private Sprite heroSprite;
+    private Bridge[] bridges;
 
     private TextureAtlas textureAtlas;
     private Animation animation;
@@ -56,6 +56,8 @@ public class GameScreen implements Screen, InputProcessor {
 
         textureAtlas = new TextureAtlas(Gdx.files.internal("anim1.atlas"));
         animation = new Animation(1f/15f, textureAtlas.getRegions());
+
+        getBridges();
     }
 
     @Override
@@ -86,7 +88,25 @@ public class GameScreen implements Screen, InputProcessor {
         }
         sb.end();
 
+    }
 
+
+    private void getBridges(){
+        int objectLayerId = 2; /* The id of the BRIDGE layer is 4 in our tilemap */
+        MapLayer bridgesObjectLayer = tiledMap.getLayers().get(objectLayerId);
+        MapObjects objects = bridgesObjectLayer.getObjects();
+
+        int numberOfObject = objects.getCount();
+
+        bridges = new Bridge[numberOfObject];
+
+        int i = 0;
+
+        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+
+            bridges[i] = new Bridge(rectangleObject, 3);
+            i++;
+        }
     }
 
     /**
@@ -96,13 +116,50 @@ public class GameScreen implements Screen, InputProcessor {
      * If not, then the hero will move and activate the moving state by returning true.
      */
     private boolean heroMovement(){
-        if (hero.isMoving() && !isCollision(hero.getDx(), hero.getDy())){
-            heroSprite.setPosition(heroSprite.getX()+hero.getDx(), heroSprite.getY()+hero.getDy());
+        int heroX = hero.getDx();
+        int heroY = hero.getDy();
+
+        if (hero.isMoving() && !isCollision(heroX, heroY) && !isCrossingBrokenBridge(heroX, heroY)){
+            heroSprite.setPosition(heroSprite.getX()+heroX, heroSprite.getY()+heroY);
             camera.position.x = Math.max(Math.min(heroSprite.getX(), 1024 - camera.viewportWidth/2), camera.viewportWidth/2);
             camera.position.y = Math.max(Math.min(heroSprite.getY(), 1024 - camera.viewportHeight/2), camera.viewportHeight/2);
             return true;
         }
         return false;
+    }
+
+
+    private boolean isCrossingBrokenBridge(int dx, int dy){
+        Rectangle heroPos = heroSprite.getBoundingRectangle();
+        heroPos.setX(heroPos.getX()+dx);
+        heroPos.setY(heroPos.getY()+dy);
+        int bridgeNumber = -1;
+
+        int number = bridges.length;
+
+        for(int i = 0; i < number; i++){
+
+            Bridge bridge = bridges[i];
+            if (bridgeNumber == -1 && bridge.getRectangleObject().getRectangle().overlaps(heroPos)){
+                bridgeNumber = i;
+                if(!hero.isOnBridge() && bridgeNumber != -1){
+                    bridges[bridgeNumber].weakenBridge();
+                }
+                hero.setOnBridge(true);
+
+            }
+        }
+        if (bridgeNumber == -1){
+            hero.setOnBridge(false);
+        }
+
+        try {
+            if (bridges[bridgeNumber].getResistance() == 0){
+                return true;
+            }
+        } catch (IndexOutOfBoundsException e) {}
+        return false;
+
     }
 
 
@@ -140,7 +197,7 @@ public class GameScreen implements Screen, InputProcessor {
      */
     private boolean isCollision(int dx, int dy){
 
-        int objectLayerId = 1; /* The id of the COLLISION layer is 1 in our tilemap */
+        int objectLayerId = 1; /* The id of the COLLISION layer is 2 in our tilemap */
         MapLayer collisionObjectLayer = tiledMap.getLayers().get(objectLayerId);
         MapObjects objects = collisionObjectLayer.getObjects();
 
