@@ -128,7 +128,17 @@ public class GameScreen implements Screen, InputProcessor {
         return false;
     }
 
-
+    /**
+     * This method deals with the bridges and hero interaction:
+     *      - if the hero is on a bridge and go out of a bridge in the next move, then the bridge is
+     *      weakened, and the hero 'isOnBridge'(iOB) is set to false. Returns false.
+     *      - if the hero is on a bridge and stay on the bridge for the next move, then it
+     *      returns false.
+     *      - if the hero is not on a bridge and goes on a bridge, set iOB to true. Then if the
+     *      bridge is 'broken', return true. Otherwise, returns false.
+     *      - if the hero is not on a bridge and won't be on a bridge in the next move, then return
+     *      false.
+     */
     private boolean isCrossingBrokenBridge(int dx, int dy){
         Rectangle heroPos = heroSprite.getBoundingRectangle();
         heroPos.setX(heroPos.getX()+dx);
