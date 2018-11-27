@@ -9,6 +9,7 @@ public class Hero extends Image {
     private int dx, dy;
     private Sprite sprite;
     private boolean isOnBridge=false;
+    private boolean isOnTeleporter = true;
 
     public boolean isOnBridge() {
         return isOnBridge;
@@ -18,7 +19,16 @@ public class Hero extends Image {
         isOnBridge = onBridge;
     }
 
+    public boolean isOnTeleporter() {
+        return isOnTeleporter;
+    }
+
+    public void setOnTeleporter(boolean onTeleporter) {
+        isOnTeleporter = onTeleporter;
+    }
+
     public Hero(String path, int x, int y){
+
         Texture texture = new Texture(Gdx.files.internal(path));
         sprite = new Sprite(texture);
         sprite.setPosition(x, y);

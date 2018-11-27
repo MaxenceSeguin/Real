@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
@@ -29,7 +30,9 @@ public class GameScreen implements Screen, InputProcessor {
     private SpriteBatch sb;
     private Hero hero;
     private Sprite heroSprite;
+
     private Bridge[] bridges;
+    private RectangleMapObject[] teleporters;
 
     private TextureAtlas textureAtlas;
     private Animation animation;
@@ -58,6 +61,7 @@ public class GameScreen implements Screen, InputProcessor {
         animation = new Animation(1f/15f, textureAtlas.getRegions());
 
         getBridges();
+        getTeleporters();
     }
 
     @Override
@@ -87,13 +91,18 @@ public class GameScreen implements Screen, InputProcessor {
             heroSprite.draw(sb);
         }
         sb.end();
+        standingOnTeleporter();
 
     }
 
 
+    /**
+     * This method create a Bridge object for every object in the bridge layer of the map and then
+     * stocks them in the 'bridges' array.
+     */
     private void getBridges(){
-        int objectLayerId = 2; /* The id of the BRIDGE layer is 4 in our tilemap */
-        MapLayer bridgesObjectLayer = tiledMap.getLayers().get(objectLayerId);
+        int bridgeLayerId = 5; /* The id of the BRIDGE layer is 4 in our tilemap */
+        MapLayer bridgesObjectLayer = tiledMap.getLayers().get(bridgeLayerId);
         MapObjects objects = bridgesObjectLayer.getObjects();
 
         int numberOfObject = objects.getCount();
@@ -104,7 +113,25 @@ public class GameScreen implements Screen, InputProcessor {
 
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
 
-            bridges[i] = new Bridge(rectangleObject, 3);
+            bridges[i] = new Bridge(rectangleObject, 3, (TiledMapTileLayer) tiledMap.getLayers().get(1));
+            i++;
+        }
+    }
+
+    private void getTeleporters(){
+        int objectLayerId = 1; /* The id of the TELEPORTER layer is 3 in our tilemap */
+        MapLayer teleportersObjectLayer = tiledMap.getLayers().get(objectLayerId);
+        MapObjects objects = teleportersObjectLayer.getObjects();
+
+        int numberOfObject = objects.getCount();
+
+        teleporters = new RectangleMapObject[numberOfObject];
+
+        int i = 0;
+
+        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+
+            teleporters[i] = rectangleObject;
             i++;
         }
     }
@@ -152,7 +179,7 @@ public class GameScreen implements Screen, InputProcessor {
             Bridge bridge = bridges[i];
             if (bridgeNumber == -1 && bridge.getRectangleObject().getRectangle().overlaps(heroPos)){
                 bridgeNumber = i;
-                if(!hero.isOnBridge() && bridgeNumber != -1){
+                if(!hero.isOnBridge()){
                     bridges[bridgeNumber].weakenBridge();
                 }
                 hero.setOnBridge(true);
@@ -160,6 +187,13 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
         if (bridgeNumber == -1){
+            // If the bridge he is going to leave is broken, change the image of the bridge to
+            // a broken one.
+            for (int i = 0; i < number; i++){
+                if (bridges[i].getResistance() == 1 && bridges[i].getRectangleObject().getRectangle().overlaps(heroSprite.getBoundingRectangle())){
+                    bridges[i].setBrokenVisible();
+                }
+            }
             hero.setOnBridge(false);
         }
 
@@ -207,7 +241,7 @@ public class GameScreen implements Screen, InputProcessor {
      */
     private boolean isCollision(int dx, int dy){
 
-        int objectLayerId = 1; /* The id of the COLLISION layer is 2 in our tilemap */
+        int objectLayerId = 4; /* The id of the COLLISION layer is 2 in our tilemap */
         MapLayer collisionObjectLayer = tiledMap.getLayers().get(objectLayerId);
         MapObjects objects = collisionObjectLayer.getObjects();
 
@@ -231,6 +265,18 @@ public class GameScreen implements Screen, InputProcessor {
         return  false;
     }
 
+    private void standingOnTeleporter(){
+        int number = teleporters.length;
+
+        for (int i = 0; i < number; i++){
+            if (heroSprite.getBoundingRectangle().overlaps(teleporters[i].getRectangle())){
+                hero.setOnTeleporter(true);
+            } else {
+                hero.setOnTeleporter(false);
+            }
+        }
+    }
+
     /**
      * Called when a key is pressed.
      * @param keycode the key pressed
@@ -247,6 +293,9 @@ public class GameScreen implements Screen, InputProcessor {
         }
         if (keycode == Input.Keys.DOWN) {
             hero.setDy(-2);
+        }
+        if (keycode == Input.Keys.D && hero.isOnTeleporter()){
+            hero.getSprite().setPosition(0,0);
         }
         return false;
     }

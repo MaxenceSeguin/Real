@@ -1,14 +1,21 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Bridge {
     private int resistance;
     private RectangleMapObject rectangleObject;
+    private TiledMapTileLayer broken;
 
-    public Bridge(RectangleMapObject object, int givenResistance){
+    public Bridge(RectangleMapObject object, int givenResistance, TiledMapTileLayer brokenSprite){
         resistance = givenResistance;
         rectangleObject = object;
+        broken = brokenSprite;
+    }
+
+    public void setBrokenVisible() {
+        broken.setVisible(true);
     }
 
     public int getResistance() {

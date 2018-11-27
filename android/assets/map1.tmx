@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="13">
+<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="16">
  <tileset firstgid="1" source="tileset1.tsx"/>
  <layer id="1" name="Map Background" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJzt16ERACAQA0Hc8wNNo4CuiaQCIjhxemfiEq2UairVVMvUxsfHx8fHx8fHxzf74+pH370/Pv5LP7q+sKlUB4pELBU=
+   eJzt1yEOACAMBEFcaSD8GQX8msq+gBOsWFMzyblaK6WK8mhFW9TBx8fHx8fHx8fHF/szle9D7P+yPz7+S996/MKiPLp4Niub
   </data>
  </layer>
+ <layer id="7" name="broken bridge 1" width="32" height="32" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJztzaENAAAIwDA04f97kXwAgjaZXgQAAHAla/r4B/Y0NoYAhQ==
+  </data>
+ </layer>
+ <layer id="3" name="Statue" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztzTERAAAIBCALeEa3si38BQpQBQAAQMJ09t/wz68DgnUAuQ==
+  </data>
+ </layer>
+ <objectgroup id="5" name="Teleporters">
+  <object id="13" x="320" y="736.636" width="31.8182" height="31.2727"/>
+ </objectgroup>
  <objectgroup id="2" name="Collision">
   <object id="4" type="COLLISION" x="129.333" y="864" width="29.3333" height="64"/>
   <object id="6" type="COLLISION" x="-53.3333" y="1025.33" width="1141.33" height="62.6667"/>
@@ -14,11 +27,6 @@
   <object id="9" type="COLLISION" x="-50.6667" y="-53.3333" width="1125.33" height="52"/>
  </objectgroup>
  <objectgroup id="4" name="Bridges">
-  <object id="12" type="BRIDGE" x="129" y="735" width="92" height="65"/>
+  <object id="15" x="129.333" y="736" width="96" height="64"/>
  </objectgroup>
- <layer id="3" name="Statue" width="32" height="32">
-  <data encoding="base64" compression="zlib">
-   eJztzTERAAAIBCALeEa3si38BQpQBQAAQMJ09t/wz68DgnUAuQ==
-  </data>
- </layer>
 </map>
