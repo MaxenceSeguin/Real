@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="16">
+<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="17">
  <tileset firstgid="1" source="tileset1.tsx"/>
  <layer id="1" name="Map Background" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJzt1yEOACAMBEFcaSD8GQX8msq+gBOsWFMzyblaK6WK8mhFW9TBx8fHx8fHx8fHF/szle9D7P+yPz7+S996/MKiPLp4Niub
+   eJzt1zESABAMBVFdGMadVbi1lE7gG7bYJs2bRMVyCFFU8ro3RE18fHx8fHx8fHx8sd+29nkV+7/c/1b/1Pvfuv+rvhX/C4tK3gJaNysh
   </data>
  </layer>
  <layer id="7" name="broken bridge 1" width="32" height="32" visible="0">
@@ -17,7 +17,8 @@
   </data>
  </layer>
  <objectgroup id="5" name="Teleporters">
-  <object id="13" x="320" y="736.636" width="31.8182" height="31.2727"/>
+  <object id="13" name="1" x="320" y="736.636" width="31.8182" height="31.2727"/>
+  <object id="16" name="2" x="321.333" y="863.333" width="30.6667" height="34"/>
  </objectgroup>
  <objectgroup id="2" name="Collision">
   <object id="4" type="COLLISION" x="129.333" y="864" width="29.3333" height="64"/>

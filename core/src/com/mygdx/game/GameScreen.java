@@ -32,7 +32,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Sprite heroSprite;
 
     private Bridge[] bridges;
-    private RectangleMapObject[] teleporters;
+    private Teleporter[] teleporters;
 
     private TextureAtlas textureAtlas;
     private Animation animation;
@@ -113,25 +113,36 @@ public class GameScreen implements Screen, InputProcessor {
 
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
 
-            bridges[i] = new Bridge(rectangleObject, 3, (TiledMapTileLayer) tiledMap.getLayers().get(1));
+            bridges[i] = new Bridge(rectangleObject, 3, (TiledMapTileLayer) tiledMap.getLayers().get(i + 1));
             i++;
         }
     }
 
     private void getTeleporters(){
-        int objectLayerId = 1; /* The id of the TELEPORTER layer is 3 in our tilemap */
+        int objectLayerId = 3; /* The id of the TELEPORTER layer is 3 in our tilemap */
         MapLayer teleportersObjectLayer = tiledMap.getLayers().get(objectLayerId);
         MapObjects objects = teleportersObjectLayer.getObjects();
 
         int numberOfObject = objects.getCount();
 
-        teleporters = new RectangleMapObject[numberOfObject];
+        RectangleMapObject teleporters1[] = new RectangleMapObject[numberOfObject];
 
         int i = 0;
 
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
 
-            teleporters[i] = rectangleObject;
+            teleporters1[i] = rectangleObject;
+            i++;
+        }
+        teleporters = new Teleporter[(i+1)/2];
+        i = 0;
+
+        /* Create pair of teleporters (one with the next one so it has to be created
+         * accordingly in the TileMap */
+        for (int j = 0; j < teleporters1.length; j+=2){
+            Teleporter teleporter = new Teleporter(teleporters1[j], teleporters1[j+1]);
+
+            teleporters[i] = teleporter;
             i++;
         }
     }
@@ -269,10 +280,14 @@ public class GameScreen implements Screen, InputProcessor {
         int number = teleporters.length;
 
         for (int i = 0; i < number; i++){
-            if (heroSprite.getBoundingRectangle().overlaps(teleporters[i].getRectangle())){
-                hero.setOnTeleporter(true);
+            if (heroSprite.getBoundingRectangle().overlaps(teleporters[i].getTeleporter1().getRectangle())){
+                hero.setIsOnTeleporter(i);
+                teleporters[i].setReadyForActivation(2);
+            } else if (heroSprite.getBoundingRectangle().overlaps(teleporters[i].getTeleporter2().getRectangle())) {
+                hero.setIsOnTeleporter(i);
+                teleporters[i].setReadyForActivation(1);
             } else {
-                hero.setOnTeleporter(false);
+                hero.setIsOnTeleporter(-1);
             }
         }
     }
@@ -294,8 +309,8 @@ public class GameScreen implements Screen, InputProcessor {
         if (keycode == Input.Keys.DOWN) {
             hero.setDy(-2);
         }
-        if (keycode == Input.Keys.D && hero.isOnTeleporter()){
-            hero.getSprite().setPosition(0,0);
+        if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
+            teleporters[hero.getIsOnTeleporter()].teleportTo(heroSprite);
         }
         return false;
     }
