@@ -6,16 +6,19 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 public class Bridge {
     private int resistance;
     private RectangleMapObject rectangleObject;
+    private TiledMapTileLayer healthy;
     private TiledMapTileLayer broken;
 
-    public Bridge(RectangleMapObject object, int givenResistance, TiledMapTileLayer brokenSprite){
+    public Bridge(RectangleMapObject object, int givenResistance, TiledMapTileLayer healthySprite, TiledMapTileLayer brokenSprite){
         resistance = givenResistance;
         rectangleObject = object;
+        healthy = healthySprite;
         broken = brokenSprite;
     }
 
     public void setBrokenVisible() {
         broken.setVisible(true);
+        healthy.setVisible(false);
     }
 
     public int getResistance() {
