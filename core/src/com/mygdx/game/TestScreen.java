@@ -66,6 +66,7 @@ public class TestScreen implements Screen, InputProcessor {
         System.out.println(tiledMap.getProperties().get("width"));
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
+
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
