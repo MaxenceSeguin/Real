@@ -27,14 +27,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 public class JungleBridge implements Screen, InputProcessor {
 
     private OrthographicCamera camera;
-    private TiledMap tiledMap;
-    private TiledMapRenderer tiledMapRenderer;
+
+    private TiledMapPlus tiledMap;
+
     private SpriteBatch sb;
     private Hero hero;
     private Sprite heroSprite;
-
-    private Bridge[] bridges;
-    private Teleporter[] teleporters;
 
     private Animation animation;
     private float elapsedTime = 0f;
@@ -54,8 +52,7 @@ public class JungleBridge implements Screen, InputProcessor {
         camera.setToOrtho(false,w,h);
         camera.update();
 
-        tiledMap = new TmxMapLoader().load("jungle_bridges.tmx");
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        tiledMap = new TiledMapPlus("jungle_bridges.tmx");
 
         Gdx.input.setInputProcessor(this);
 
@@ -66,9 +63,6 @@ public class JungleBridge implements Screen, InputProcessor {
 
         TextureAtlas textureAtlas = new TextureAtlas(Gdx.files.internal("anim1.atlas"));
         animation = new Animation(1f/15f, textureAtlas.getRegions());
-
-        getBridges();
-        //getTeleporters();
 
         image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
         image.setPosition(300,400);
@@ -89,8 +83,8 @@ public class JungleBridge implements Screen, InputProcessor {
 
         updateCamera();
 
-        tiledMapRenderer.setView(camera);
-        tiledMapRenderer.render();
+        tiledMap.tiledMapRenderer.setView(camera);
+        tiledMap.tiledMapRenderer.render();
 
         sb.setProjectionMatrix(camera.combined);
         sb.begin();
@@ -109,32 +103,9 @@ public class JungleBridge implements Screen, InputProcessor {
         sb.end();
     }
 
-
-    /**
-     * This method create a Bridge object for every object in the bridge layer of the map and then
-     * stocks them in the 'bridges' array.
-     */
-    private void getBridges(){
-        int bridgeLayerId = 39; /* The id of the BRIDGE layer is 4 in our tilemap */
-        MapLayer bridgesObjectLayer = tiledMap.getLayers().get(bridgeLayerId);
-        MapObjects objects = bridgesObjectLayer.getObjects();
-
-        int numberOfObject = objects.getCount();
-
-        bridges = new Bridge[numberOfObject];
-
-        int i = 0;
-
-        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-
-            bridges[i] = new Bridge(rectangleObject, 3, (TiledMapTileLayer) tiledMap.getLayers().get(7 + i), (TiledMapTileLayer) tiledMap.getLayers().get(22 + i));
-            i++;
-        }
-    }
-
     private void updateCamera(){
-        camera.position.x = Math.max(Math.min(heroSprite.getX(), 1024 - camera.viewportWidth/2), camera.viewportWidth/2);
-        camera.position.y = Math.max(Math.min(heroSprite.getY(), 1024 - camera.viewportHeight/2), camera.viewportHeight/2);
+        camera.position.x = Math.max(Math.min(heroSprite.getX(), tiledMap.width - camera.viewportWidth/2), camera.viewportWidth/2);
+        camera.position.y = Math.max(Math.min(heroSprite.getY(), tiledMap.height - camera.viewportHeight/2), camera.viewportHeight/2);
         camera.update();
     }
 
@@ -172,15 +143,15 @@ public class JungleBridge implements Screen, InputProcessor {
         heroPos.setY(heroPos.getY()+dy);
         int bridgeNumber = -1;
 
-        int number = bridges.length;
+        int number = tiledMap.bridges.length;
 
         for(int i = 0; i < number; i++){
 
-            Bridge bridge = bridges[i];
+            Bridge bridge = tiledMap.bridges[i];
             if (bridgeNumber == -1 && bridge.getRectangleObject().getRectangle().overlaps(heroPos)){
                 bridgeNumber = i;
                 if(!hero.isOnBridge()){
-                    bridges[bridgeNumber].weakenBridge();
+                    tiledMap.bridges[bridgeNumber].weakenBridge();
                 }
                 hero.setOnBridge(true);
 
@@ -190,15 +161,15 @@ public class JungleBridge implements Screen, InputProcessor {
             // If the bridge he is going to leave is broken, change the image of the bridge to
             // a broken one.
             for (int i = 0; i < number; i++){
-                if (bridges[i].getResistance() == 1 && bridges[i].getRectangleObject().getRectangle().overlaps(heroSprite.getBoundingRectangle())){
-                    bridges[i].setBrokenVisible();
+                if (tiledMap.bridges[i].getResistance() == 1 && tiledMap.bridges[i].getRectangleObject().getRectangle().overlaps(heroSprite.getBoundingRectangle())){
+                    tiledMap.bridges[i].setBrokenVisible();
                 }
             }
             hero.setOnBridge(false);
         }
 
         try {
-            if (bridges[bridgeNumber].getResistance() == 0){
+            if (tiledMap.bridges[bridgeNumber].getResistance() == 0){
                 return true;
             }
         } catch (IndexOutOfBoundsException e) {}
@@ -241,10 +212,6 @@ public class JungleBridge implements Screen, InputProcessor {
      */
     private boolean isCollision(int dx, int dy){
 
-        int objectLayerId = 38; /* The id of the COLLISION layer is 2 in our tilemap */
-        MapLayer collisionObjectLayer = tiledMap.getLayers().get(objectLayerId);
-        MapObjects objects = collisionObjectLayer.getObjects();
-
         Rectangle heroPos = heroSprite.getBoundingRectangle();
         heroPos.setX(heroPos.getX()+dx);
         heroPos.setY(heroPos.getY()+dy);
@@ -253,9 +220,9 @@ public class JungleBridge implements Screen, InputProcessor {
         *  We only treat the rectangle form the COLLISION layer, need improvement if other collision
         *  shapes are added.
         */
-        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+        for (Rectangle rectangleObject : tiledMap.collisionBoxes) {
 
-            Rectangle rectangle = rectangleObject.getRectangle();
+            Rectangle rectangle = rectangleObject;
             if (Intersector.overlaps(rectangle, heroPos)) {
                 /* collision happened */
                 return true;
@@ -283,7 +250,7 @@ public class JungleBridge implements Screen, InputProcessor {
             hero.setDy(-2);
         }
         if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
-            teleporters[hero.getIsOnTeleporter()].teleportTo(heroSprite);
+            tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(heroSprite);
         }
         if (keycode == Input.Keys.L) {
             draw = true;

@@ -13,15 +13,15 @@ public class TiledMapPlus {
     private TiledMap tiledMap;
     public int width;
     public int height;
-    private OrthogonalTiledMapRenderer tiledMapRenderer;
-    private Rectangle[] collisionBoxes;
-    private Bridge[] bridges;
-    private Teleporter[] teleporters;
+    public OrthogonalTiledMapRenderer tiledMapRenderer;
+    public Rectangle[] collisionBoxes;
+    public Bridge[] bridges;
+    public Teleporter[] teleporters;
 
     public TiledMapPlus(String fileLocation){
         this.tiledMap = new TmxMapLoader().load(fileLocation);
-        this.width = (Integer) tiledMap.getProperties().get("width");
-        this.height = (Integer) tiledMap.getProperties().get("height");
+        this.width = (Integer) tiledMap.getProperties().get("width") * (Integer) tiledMap.getProperties().get("tilewidth");
+        this.height = (Integer) tiledMap.getProperties().get("height") * (Integer) tiledMap.getProperties().get("tileheight");
         this.tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         getBridges();
         getTeleporters();
@@ -42,17 +42,26 @@ public class TiledMapPlus {
         bridges = new Bridge[numberOfObject];
 
         int i = 0;
+        int j;
 
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
 
-            bridges[i] = new Bridge(rectangleObject, 3, (TiledMapTileLayer) tiledMap.getLayers().get("Bridge " + (i+1)), (TiledMapTileLayer) tiledMap.getLayers().get("Broken bridge " + (i+1)));
+            j = i+1;
+            String id = "Bridge " + j;
+            String bid = "Broken Bridge " + j;
+            bridges[i] = new Bridge(rectangleObject, 3, (TiledMapTileLayer) tiledMap.getLayers().get(id), (TiledMapTileLayer) tiledMap.getLayers().get(bid));
             i++;
         }
     }
 
     private void getTeleporters(){
         MapLayer teleportersObjectLayer = tiledMap.getLayers().get("Teleporters");
-        MapObjects objects = teleportersObjectLayer.getObjects();
+        MapObjects objects;
+        try {
+            objects = teleportersObjectLayer.getObjects();
+        } catch (NullPointerException e) {
+            return;
+        }
 
         int numberOfObject = objects.getCount();
 
@@ -93,6 +102,10 @@ public class TiledMapPlus {
             collisionBoxes[i] = rectangleObject.getRectangle();
             i++;
         }
+    }
+
+    public TiledMap getMap(){
+        return tiledMap;
     }
 
 
