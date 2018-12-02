@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.Maps;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -23,6 +23,12 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.mygdx.game.Bridge;
+import com.mygdx.game.Hero;
+import com.mygdx.game.Maps.DungeonTransition1;
+import com.mygdx.game.Platform;
+import com.mygdx.game.Teleporter;
+import com.mygdx.game.TiledMapPlus;
 
 public class TestScreen implements Screen, InputProcessor {
 
@@ -65,13 +71,14 @@ public class TestScreen implements Screen, InputProcessor {
         tiledMap = new TmxMapLoader().load("map1.tmx");
         System.out.println(tiledMap.getProperties().get("width"));
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        TiledMapPlus tiledMapPlus = new TiledMapPlus("map1.tmx", null);
 
 
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", 0, 0);
+        hero = new Hero("hero1.png", tiledMapPlus, "anim1.atlas");
         heroSprite = hero.getSprite();
 
         TextureAtlas textureAtlas = new TextureAtlas(Gdx.files.internal("anim1.atlas"));
@@ -87,6 +94,7 @@ public class TestScreen implements Screen, InputProcessor {
         platformSprite = platform.getSprite();
 
     }
+
 
     @Override
     public void show() {    }
@@ -364,7 +372,7 @@ public class TestScreen implements Screen, InputProcessor {
             teleporters[hero.getIsOnTeleporter()].teleportTo(heroSprite);
         }
         if (keycode == Input.Keys.L) {
-            draw = true;
+            //draw = true;
         }
         if (keycode == Input.Keys.R) {
             game.setScreen(new DungeonTransition1(game));

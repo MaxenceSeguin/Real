@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="9">
+<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="13">
  <tileset firstgid="1" name="tileset1" tilewidth="32" tileheight="32" tilecount="4096" columns="128">
   <image source="tileset1.png" width="4096" height="1024"/>
  </tileset>
@@ -39,6 +39,11 @@
 2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952,2952
 </data>
  </layer>
+ <objectgroup id="4" name="Spawn">
+  <object id="9" x="86" y="94">
+   <point/>
+  </object>
+ </objectgroup>
  <layer id="2" name="Visuals" width="32" height="32">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -84,5 +89,10 @@
   <object id="6" x="44" y="392" width="38.6667" height="268"/>
   <object id="7" x="18.6667" y="-12" width="40" height="412"/>
   <object id="8" x="136" y="-12" width="28" height="620"/>
+  <object id="10" x="6" y="-55" width="224" height="44"/>
+  <object id="11" x="773" y="-63" width="222" height="60"/>
+ </objectgroup>
+ <objectgroup id="5" name="Next level">
+  <object id="12" x="847" y="-27" width="48" height="35"/>
  </objectgroup>
 </map>
