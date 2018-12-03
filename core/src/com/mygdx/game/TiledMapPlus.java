@@ -94,7 +94,7 @@ public class TiledMapPlus {
     }
 
     /**
-     *
+     * This method sets the spawning coordinates on this map.
      */
     private void setSpawnArea(){
         try {
@@ -135,6 +135,9 @@ public class TiledMapPlus {
         }
     }
 
+    /**
+     * This method initializes all the teleporters and creates Teleporter instances.
+     */
     private void getTeleporters(){
         MapLayer teleportersObjectLayer = tiledMap.getLayers().get("Teleporters");
         MapObjects objects;

@@ -62,7 +62,7 @@ public class GameInterface {
                 }
             }
             item.renderOnMap();
-            item.sprite.draw(sb, 1);
+            item.image.draw(sb, 1);
         }
     }
 

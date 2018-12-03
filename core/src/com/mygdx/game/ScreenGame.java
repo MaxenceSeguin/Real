@@ -8,7 +8,7 @@ public class ScreenGame extends Game {
     static public Skin gameSkin;
     public void create () {
         gameSkin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-        this.setScreen(new TitleScreen(this));
+        this.setScreen(new GameTitleScreen(this));
     }
 
     public void render () {

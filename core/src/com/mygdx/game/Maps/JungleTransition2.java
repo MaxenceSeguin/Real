@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mygdx.game.GameOrthoCamera;
+import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
 import com.mygdx.game.TiledMapPlus;
 
@@ -28,8 +29,11 @@ public class JungleTransition2 implements InputProcessor, Screen {
 
     private Game game;
 
+    private GameSettings settings;
 
-    public JungleTransition2(Game aGame) {
+
+    public JungleTransition2(Game aGame, GameSettings settings) {
+        this.settings = settings;
 
         game = aGame;
 
@@ -79,7 +83,7 @@ public class JungleTransition2 implements InputProcessor, Screen {
 
     void nextLevelListener(){
         if (hero.isInExitArea()) {
-            game.setScreen(new JungleBridge(game));
+            game.setScreen(new JungleBridge(game, settings));
         }
     }
 
@@ -146,7 +150,7 @@ public class JungleTransition2 implements InputProcessor, Screen {
             //draw = true;
         }
         if (keycode == Input.Keys.R) {
-            game.setScreen(new JungleBridge(game));
+            game.setScreen(new JungleBridge(game, settings));
         }
         return false;
     }

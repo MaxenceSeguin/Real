@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mygdx.game.Bridge;
+import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
 import com.mygdx.game.Maps.DungeonTransition1;
 import com.mygdx.game.Platform;
@@ -58,8 +59,13 @@ public class TestScreen implements Screen, InputProcessor {
     private float yPosition = platformLeft;
     private boolean movingRight = true;
 
+    private GameSettings settings;
 
-    public TestScreen(Game aGame) {
+
+    public TestScreen(Game aGame, GameSettings settings) {
+        this.settings = settings;
+
+
         game = aGame;
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
@@ -375,7 +381,7 @@ public class TestScreen implements Screen, InputProcessor {
             //draw = true;
         }
         if (keycode == Input.Keys.R) {
-            game.setScreen(new DungeonTransition1(game));
+            game.setScreen(new DungeonTransition1(game, settings));
         }
         return false;
     }

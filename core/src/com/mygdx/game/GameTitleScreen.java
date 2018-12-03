@@ -12,23 +12,54 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Maps.TestScreen;
-import com.mygdx.game.MyGdxGame;
+
+public class GameTitleScreen implements InputProcessor, Screen {
+
+    Game game;
+    SpriteBatch sb;
+    OrthographicCamera camera;
+    Image background, optionButton, playButton, credits, gmOff, gmOn, back, quit, seOff, seOn;
+    float delay;
+    GameSettings settings;
+
+    public GameTitleScreen(Game aGame) {
+
+        settings = new GameSettings();
+
+        game = aGame;
+
+        Gdx.input.setInputProcessor(this);
+
+        sb = new SpriteBatch();
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false,1920,1080);
+        camera.update();
+
+        background = new Image(new Texture(Gdx.files.internal("TitleScreenImages/TitleScreenBackground.png")));
+        optionButton = new Image(new Texture(Gdx.files.internal("OptionsButton.png")));
+        optionButton.setPosition(centerX(optionButton), 680);
+        playButton = new Image(new Texture(Gdx.files.internal("EnterButton.png")));
+        playButton.setPosition(centerX(playButton), 800);
+        credits = new Image(new Texture(Gdx.files.internal("TitleScreenImages/Credits.png")));
+        gmOff = new Image(new Texture(Gdx.files.internal("TitleScreenImages/GameMusicOFF.png")));
+        gmOn = new Image(new Texture(Gdx.files.internal("TitleScreenImages/GameMusicON.png")));
+        back = new Image(new Texture(Gdx.files.internal("TitleScreenImages/GoBack.png")));
+        quit = new Image(new Texture(Gdx.files.internal("TitleScreenImages/QuitGame.png")));
+        seOff = new Image(new Texture(Gdx.files.internal("TitleScreenImages/SoundEffectsOFF.png")));
+        seOn = new Image(new Texture(Gdx.files.internal("TitleScreenImages/SoundEffectsON.png")));
 
 
-public class OptionScreen implements Screen, InputProcessor {
+    }
 
-    private Game game;
-    private SpriteBatch sb;
-    private OrthographicCamera camera;
-    private Image background, optionButton, playButton, credits, gmOff, gmOn, back, quit, seOff, seOn, optionBackground;
-    private GameSettings settings;
+    public GameTitleScreen(Game aGame, GameSettings settings) {
 
-    public OptionScreen(Game aGame, GameSettings settings) {
         this.settings = settings;
 
         game = aGame;
@@ -42,38 +73,24 @@ public class OptionScreen implements Screen, InputProcessor {
         camera.update();
 
         background = new Image(new Texture(Gdx.files.internal("TitleScreenImages/TitleScreenBackground.png")));
-        optionBackground = new Image(new Texture(Gdx.files.internal("TitleScreenImages/OptionScreenBackground.png")));
-
         optionButton = new Image(new Texture(Gdx.files.internal("OptionsButton.png")));
         optionButton.setPosition(centerX(optionButton), 680);
-
         playButton = new Image(new Texture(Gdx.files.internal("EnterButton.png")));
-        playButton.setPosition(centerX(playButton), 900);
-
+        playButton.setPosition(centerX(playButton), 800);
         credits = new Image(new Texture(Gdx.files.internal("TitleScreenImages/Credits.png")));
-        credits.setPosition(centerX(credits), 500);
-
         gmOff = new Image(new Texture(Gdx.files.internal("TitleScreenImages/GameMusicOFF.png")));
         gmOn = new Image(new Texture(Gdx.files.internal("TitleScreenImages/GameMusicON.png")));
-        gmOn.setPosition(centerX(gmOn), 600);
-        gmOff.setPosition(centerX(gmOn), 600);
-
         back = new Image(new Texture(Gdx.files.internal("TitleScreenImages/GoBack.png")));
-        back.setPosition(centerX(back), 200);
-
         quit = new Image(new Texture(Gdx.files.internal("TitleScreenImages/QuitGame.png")));
-        quit.setPosition(centerX(quit), 400);
-
         seOff = new Image(new Texture(Gdx.files.internal("TitleScreenImages/SoundEffectsOFF.png")));
         seOn = new Image(new Texture(Gdx.files.internal("TitleScreenImages/SoundEffectsON.png")));
-        seOn.setPosition(centerX(seOn), 800);
-        seOff.setPosition(centerX(seOn), 800);
 
 
     }
 
     @Override
     public void render(float delta) {
+        delay+=1;
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -82,41 +99,11 @@ public class OptionScreen implements Screen, InputProcessor {
 
         sb.setProjectionMatrix(camera.combined);
         sb.begin();
-
-        optionBackground.draw(sb, 1);
-
-        drawSoundEffects();
-        drawGameMusic();
-
-        back.draw(sb, 1);
-        quit.draw(sb, 1);
-        credits.draw(sb, 1);
-
+        background.draw(sb, 1);
+        optionButton.draw(sb, 1);
+        playButton.draw(sb, ((float)0.5 + (delay%50)/100));
         sb.end();
-    }
 
-    private void drawSoundEffects(){
-        if(settings.soundEffects){
-            seOn.draw(sb, 1);
-        } else {
-            seOff.draw(sb, 1);
-        }
-    }
-
-    private void drawGameMusic(){
-        if(settings.gameMusic){
-            gmOn.draw(sb, 1);
-        } else {
-            gmOff.draw(sb, 1);
-        }
-    }
-
-    private boolean clickedInside(int x , int y, Image image){
-        if (x > image.getX() && x < image.getX() + image.getWidth()
-                && y > image.getY() && y < image.getY() + image.getHeight()){
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -142,19 +129,14 @@ public class OptionScreen implements Screen, InputProcessor {
         screenY*=camera.viewportHeight/Gdx.graphics.getHeight();
         screenY = (int)  camera.viewportHeight - screenY;
 
-        float dx = 1920/Gdx.graphics.getWidth();
-        float dy = 1080/Gdx.graphics.getHeight();
+        System.out.println(screenY + " " + screenX);
 
-        if (clickedInside(screenX, screenY, back)){
-            game.setScreen(new GameTitleScreen(game, settings));
-        } else if (clickedInside(screenX, screenY, credits)) {
-            //show credits
-        } else if (clickedInside(screenX, screenY, gmOn) || clickedInside(screenX, screenY, gmOff)){
-            settings.gameMusic = !settings.gameMusic;
-        } else if (clickedInside(screenX, screenY, seOn) || clickedInside(screenX, screenY, seOff)){
-            settings.soundEffects = !settings.soundEffects;
-        } else if (clickedInside(screenX, screenY, quit)){
-            Gdx.app.exit();
+        float dx = camera.viewportWidth/Gdx.graphics.getWidth();
+        float dy = camera.viewportHeight/Gdx.graphics.getHeight();
+
+        if (screenX > optionButton.getX() && screenX < optionButton.getX() + optionButton.getWidth()
+            && screenY > optionButton.getY() && screenY < optionButton.getY() + optionButton.getHeight()){
+            game.setScreen(new OptionScreen(game, settings));
         }
         return false;
     }
@@ -206,7 +188,7 @@ public class OptionScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-
+        sb.dispose();
     }
 
     float centerX(Image image){

@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
+import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
 import com.mygdx.game.TiledMapPlus;
 
@@ -30,7 +31,11 @@ public class JungleBridge implements Screen, InputProcessor {
 
     private GameInterface gameInterface;
 
-    public JungleBridge(Game aGame) {
+    private GameSettings settings;
+
+
+    public JungleBridge(Game aGame, GameSettings settings) {
+        this.settings = settings;
 
         game = aGame;
 
@@ -139,10 +144,10 @@ public class JungleBridge implements Screen, InputProcessor {
             //draw = true;
         }
         if (keycode == Input.Keys.R) {
-            game.setScreen(new JungleBridge(game));
+            game.setScreen(new JungleBridge(game, settings));
         }
         if (keycode == Input.Keys.F) {
-            game.setScreen(new DungeonTransition3(game));
+            game.setScreen(new DungeonTransition3(game, settings));
         }
 
         return false;
