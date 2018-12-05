@@ -7,7 +7,7 @@
   <image source="lpc-terrains/lpc-terrains/terrain-v7.png" width="1024" height="2048"/>
  </tileset>
  <tileset firstgid="3073" name="Bridges" tilewidth="32" tileheight="32" tilecount="28" columns="7">
-  <image source="lpc_wooden_bridge_rework-1.0/preview.png" width="224" height="128"/>
+  <image source="tilesets/preview.png" width="224" height="128"/>
  </tileset>
  <layer id="1" name="Background" width="32" height="32">
   <data encoding="csv">

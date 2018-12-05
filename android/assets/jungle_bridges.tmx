@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="51" nextobjectid="76">
+<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="52" nextobjectid="78">
  <tileset firstgid="1" name="Jungle" tilewidth="32" tileheight="32" tilecount="1024" columns="32">
-  <image source="jungle1.png" width="1024" height="1024"/>
+  <image source="tilesets/jungle1.png" width="1024" height="1024"/>
  </tileset>
  <tileset firstgid="1025" name="Terrain" tilewidth="32" tileheight="32" tilecount="2048" columns="32">
   <image source="lpc-terrains/lpc-terrains/terrain-v7.png" width="1024" height="2048"/>
  </tileset>
  <tileset firstgid="3073" name="Bridges" tilewidth="32" tileheight="32" tilecount="28" columns="7">
-  <image source="lpc_wooden_bridge_rework-1.0/preview.png" width="224" height="128"/>
+  <image source="tilesets/preview.png" width="224" height="128"/>
  </tileset>
  <tileset firstgid="3101" name="Broken Bridges" tilewidth="32" tileheight="32" tilecount="24" columns="3">
-  <image source="bridge.png" width="96" height="256"/>
+  <image source="tilesets/bridge.png" width="96" height="256"/>
  </tileset>
  <layer id="1" name="Background" width="32" height="32">
   <data encoding="csv">
@@ -1457,5 +1457,8 @@
   <object id="75" x="16.6667" y="745.333">
    <point/>
   </object>
+ </objectgroup>
+ <objectgroup id="51" name="Next level">
+  <object id="77" x="1029.33" y="808" width="10.6667" height="218.667"/>
  </objectgroup>
 </map>

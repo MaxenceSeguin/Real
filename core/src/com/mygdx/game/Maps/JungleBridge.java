@@ -24,9 +24,6 @@ public class JungleBridge implements Screen, InputProcessor {
     private SpriteBatch sb;
     private Hero hero;
 
-    private Image image;
-    private boolean draw;
-
     private Game game;
 
     private GameInterface gameInterface;
@@ -45,8 +42,8 @@ public class JungleBridge implements Screen, InputProcessor {
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, "anim1.atlas");
-
+        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
+                "anim1.atlas", "anim1.atlas", "anim1.atlas");
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
@@ -62,6 +59,8 @@ public class JungleBridge implements Screen, InputProcessor {
     public void render(float delta) {
         colorManagement();
 
+        nextLevelListener();
+
         camera.updateCamera();
 
         tiledMap.tiledMapRenderer.setView(camera);
@@ -74,11 +73,14 @@ public class JungleBridge implements Screen, InputProcessor {
 
         gameInterface.refresh();
 
-        if (draw) {
-            image.draw(sb, 1);
-        }
-
         sb.end();
+    }
+
+    void nextLevelListener(){
+        if (hero.isInExitArea()) {
+            settings.refresh(hero);
+            game.setScreen(new River(game, settings));
+        }
     }
 
     void colorManagement(){
@@ -164,9 +166,6 @@ public class JungleBridge implements Screen, InputProcessor {
         }
         if (keycode == Input.Keys.UP || keycode == Input.Keys.DOWN) {
             hero.setDy(0);
-        }
-        if (keycode == Input.Keys.L) {
-            draw = false;
         }
         return false;
     }

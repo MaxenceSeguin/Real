@@ -7,4 +7,8 @@ public class GameSettings {
     public boolean soundEffects = true;
 
     public GameSettings(){}
+
+    public void refresh(Hero hero){
+        this.hero = hero;
+    }
 }

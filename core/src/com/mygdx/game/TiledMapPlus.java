@@ -2,6 +2,8 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
@@ -24,9 +26,21 @@ public class TiledMapPlus {
     public Rectangle[] collisionBoxes;
     public Bridge[] bridges;
     public Teleporter[] teleporters;
+    public Rectangle[] deathBoxes;
+    public Rectangle[] water;
     public Rectangle exitArea;
     public float spawnX=0, spawnY=0;
     public ArrayList<InventoryItem> items;
+
+    public PlatformTiled[] platformTiledArray;
+    public PlatformSprite platformS;
+    public Sprite[] platformSpriteArray;
+
+    public boolean[] platformMovementArray;
+    public boolean[] isOnPlatformArray;
+    public float[] platformLeft;
+    public float[] platformRight;
+
 
     public TiledMapPlus(String fileLocation, String object[]){
         try {
@@ -43,6 +57,9 @@ public class TiledMapPlus {
         setSpawnArea();
         getExitArea();
         getItems(object);
+        getPlatforms();
+        getDeathBoxes();
+        getWater();
 
     }
 
@@ -136,6 +153,67 @@ public class TiledMapPlus {
     }
 
     /**
+     * This method initializes all the platform.
+     */
+    private void getPlatforms() {
+        MapLayer platformsObjectLayer = tiledMap.getLayers().get("Platforms");
+        MapObjects objects;
+        try {
+            objects = platformsObjectLayer.getObjects();
+        } catch (NullPointerException e){
+            System.out.println("No platforms layer detected.");
+            return;
+        }
+
+        int numberOfObject = objects.getCount();
+
+        RectangleMapObject platforms1[] = new RectangleMapObject[numberOfObject];
+
+        int i = 0;
+
+        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+
+            platforms1[i] = rectangleObject;
+            i++;
+        }
+
+        platformTiledArray = new PlatformTiled[(i + 1) / 2];
+        platformSpriteArray = new Sprite[(i + 1) / 2];
+        platformLeft = new float[(i + 1) / 2];
+        platformRight = new float[(i + 1) / 2];
+        platformMovementArray = new boolean[(i + 1) / 2];
+        isOnPlatformArray = new boolean[(i + 1) / 2];
+
+        i = 0;
+
+        System.out.println(platforms1.length);
+
+        for (int j = 0; j < platforms1.length; j += 2) {
+            PlatformTiled platform = new PlatformTiled(platforms1[j], platforms1[j + 1]);
+            platformTiledArray[i] = platform;
+            platformLeft[i] = platforms1[j].getRectangle().x;
+            platformRight[i] = platforms1[j + 1].getRectangle().x;
+            platformS = new PlatformSprite("crate.png", (int) platformLeft[i], (int) platforms1[j].getRectangle().y);
+            platformSpriteArray[i] = platformS.getPlatformSprite();
+            platformMovementArray[i] = true;
+            isOnPlatformArray[i] = false;
+            i++;
+        }
+    }
+
+    public int getNumberOfPlatforms(){
+        return platformSpriteArray.length;
+    }
+
+    public void drawPlatforms(SpriteBatch sb){
+        for (int i = 0; i < getNumberOfPlatforms(); i++) {
+            platformSpriteArray[i].draw(sb);
+        }
+    }
+
+
+
+    /**
      * This method initializes all the teleporters and creates Teleporter instances.
      */
     private void getTeleporters(){
@@ -167,6 +245,52 @@ public class TiledMapPlus {
             Teleporter teleporter = new Teleporter(teleporters1[j], teleporters1[j+1]);
 
             teleporters[i] = teleporter;
+            i++;
+        }
+    }
+
+    private void getWater(){
+        MapLayer bridgesObjectLayer = tiledMap.getLayers().get("Water");
+        MapObjects objects;
+        try {
+            objects = bridgesObjectLayer.getObjects();
+        } catch (NullPointerException e){
+            System.out.println("No water");
+            return;
+        }
+
+        int numberOfObject = objects.getCount();
+
+        water = new Rectangle[numberOfObject];
+
+        int i = 0;
+
+        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+
+            water[i] = rectangleObject.getRectangle();
+            i++;
+        }
+    }
+
+    private void getDeathBoxes(){
+        MapLayer bridgesObjectLayer = tiledMap.getLayers().get("Death");
+        MapObjects objects;
+        try {
+            objects = bridgesObjectLayer.getObjects();
+        } catch (NullPointerException e){
+            System.out.println("No death");
+            return;
+        }
+
+        int numberOfObject = objects.getCount();
+
+        deathBoxes = new Rectangle[numberOfObject];
+
+        int i = 0;
+
+        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+
+            deathBoxes[i] = rectangleObject.getRectangle();
             i++;
         }
     }

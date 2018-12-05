@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
 import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
@@ -29,6 +30,8 @@ public class JungleTransition2 implements InputProcessor, Screen {
 
     private Game game;
 
+    private GameInterface gameInterface;
+
     private GameSettings settings;
 
 
@@ -37,15 +40,18 @@ public class JungleTransition2 implements InputProcessor, Screen {
 
         game = aGame;
 
+
         tiledMap = new TiledMapPlus("jungle_corridor2.tmx", null);
 
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, "anim1.atlas");
-
+        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
+                "anim1.atlas", "anim1.atlas", "anim1.atlas");
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
+
+        gameInterface = new GameInterface(hero, sb, camera, tiledMap);
 
         image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
         image.setPosition(300,400);
@@ -64,11 +70,14 @@ public class JungleTransition2 implements InputProcessor, Screen {
 
         camera.updateCamera();
 
+
         tiledMap.tiledMapRenderer.setView(camera);
         tiledMap.tiledMapRenderer.render();
 
         sb.setProjectionMatrix(camera.combined);
         sb.begin();
+
+        gameInterface.refresh();
 
         hero.draw(sb);
 
@@ -83,6 +92,7 @@ public class JungleTransition2 implements InputProcessor, Screen {
 
     void nextLevelListener(){
         if (hero.isInExitArea()) {
+            settings.refresh(hero);
             game.setScreen(new JungleBridge(game, settings));
         }
     }

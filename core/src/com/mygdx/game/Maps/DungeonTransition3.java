@@ -8,6 +8,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mygdx.game.GameInterface;
@@ -26,7 +27,6 @@ public class DungeonTransition3 implements Screen, InputProcessor {
     private Hero hero;
 
     private Image image;
-    private boolean draw;
 
     private Game game;
 
@@ -47,8 +47,8 @@ public class DungeonTransition3 implements Screen, InputProcessor {
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, "anim1.atlas");
-
+        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
+                "anim1.atlas", "anim1.atlas", "anim1.atlas");
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
@@ -80,18 +80,22 @@ public class DungeonTransition3 implements Screen, InputProcessor {
 
         gameInterface.refresh();
 
-        if (draw) {
-            image.draw(sb, 1);
-        }
+        tiledMap.drawPlatforms(sb);
+
+        hero.platformBusiness();
 
         nextLevelListener();
 
         sb.end();
     }
 
+
+
+
     void nextLevelListener(){
         if (hero.isInExitArea()) {
-            game.setScreen(new JungleBridge(game, settings));
+            settings.refresh(hero);
+            game.setScreen(new River(game, settings));
         }
     }
 
@@ -158,6 +162,7 @@ public class DungeonTransition3 implements Screen, InputProcessor {
             //draw = true;
         }
         if (keycode == Input.Keys.R) {
+            settings.refresh(hero);
             game.setScreen(new JungleBridge(game, settings));
         }
         return false;
@@ -174,9 +179,6 @@ public class DungeonTransition3 implements Screen, InputProcessor {
         }
         if (keycode == Input.Keys.UP || keycode == Input.Keys.DOWN) {
             hero.setDy(0);
-        }
-        if (keycode == Input.Keys.L) {
-            draw = false;
         }
         return false;
     }
