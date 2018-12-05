@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mygdx.game.Bridge;
+import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
 import com.mygdx.game.Maps.DungeonTransition1;
@@ -61,9 +63,14 @@ public class TestScreen implements Screen, InputProcessor {
 
     private GameSettings settings;
 
+    private GameInterface gameInterface;
+
+    private Music music;
+
 
     public TestScreen(Game aGame, GameSettings settings) {
         this.settings = settings;
+
 
 
         game = aGame;
@@ -84,7 +91,8 @@ public class TestScreen implements Screen, InputProcessor {
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMapPlus, "anim1.atlas");
+        hero = new Hero("hero1.png", tiledMapPlus, 3, "anim1.atlas",
+                "anim1.atlas", "anim1.atlas", "anim1.atlas");
         heroSprite = hero.getSprite();
 
         TextureAtlas textureAtlas = new TextureAtlas(Gdx.files.internal("anim1.atlas"));
@@ -99,6 +107,10 @@ public class TestScreen implements Screen, InputProcessor {
         platform = new Platform("Crate.png", (int) xPosition, (int) yPosition);
         platformSprite = platform.getSprite();
 
+        music=Gdx.audio.newMusic(Gdx.files.internal("music1.mp3"));
+        music.setLooping(true);
+
+
     }
 
 
@@ -110,6 +122,9 @@ public class TestScreen implements Screen, InputProcessor {
      */
     @Override
     public void render(float delta) {
+        if (settings.gameMusic){
+            music.play();
+        }
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -381,6 +396,7 @@ public class TestScreen implements Screen, InputProcessor {
             //draw = true;
         }
         if (keycode == Input.Keys.R) {
+            settings.refresh(hero);
             game.setScreen(new DungeonTransition1(game, settings));
         }
         return false;

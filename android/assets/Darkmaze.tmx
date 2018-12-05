@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" name="Shockbolt_32x32_01" tilewidth="32" tileheight="32" tilecount="4096" columns="128">
+  <image source="tilesets/Shockbolt_32x32_01.png" width="4096" height="1024"/>
+ </tileset>
+ <layer id="1" name="Maze" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztzaERADAIBDA816FZj6nYom8iorOvasOmM/x+v9/v9/v9fr/f7//5Jx1DiFRz
+  </data>
+ </layer>
+ <layer id="2" name="Tile Layer 2" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJy1VzkOwzAMy9BORf//qT6qU1FDEEVSUgQYuWiT1DHkuu6J58vDf97/9Xs+30cMWwo+8mfP2XmKFzcyzQzfWUgf4md563p09iC9k77IzmI1Z72g+nL4Vc/nuXf4r+qf8TPtW/4rfoZHGpz6Mx2b/BGP3nX2Vp46vVZ9Q3OjzI+L7Zyp+lfmTMlBh38z0DwqHibL8X+nZ2du3RqrM5DxozxVWDVXTs2dnCh5YfxIb7cnkG4Vv1Fzxq/UcDoHqJcQ/7S3q+vmTE/5M78RN53n84ruN/iZf6Yl6nfrpO6J/G7/Zd/Znso/wzAPbkz7/2H+X6P4AkORndc=
+  </data>
+ </layer>
+</map>

@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -8,17 +9,22 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class Hero extends Image {
     private int dx, dy;
-    private Sprite sprite;
+    public Sprite sprite;
     private boolean isOnBridge=false;
     private int isOnTeleporter = -1;
     private TiledMapPlus tiledMap;
     public Animation walkingRightAnimation;
+    public Animation walkingLeftAnimation;
+    public Animation walkingUpAnimation;
+    public Animation walkingDownAnimation;
     private float elapsedTime;
     public int health;
+    public boolean isOnPlatform = false;
 
     public boolean isOnBridge() {
         return isOnBridge;
@@ -28,15 +34,21 @@ public class Hero extends Image {
         isOnBridge = onBridge;
     }
 
-    public Hero(String path, TiledMapPlus tiledmap, String filePath){
-
+    public Hero(String path, TiledMapPlus tiledmap, int health,
+                String filePathRight, String filePathLeft, String filePathUp, String filePathDown){
         this.tiledMap = tiledmap;
         Texture texture = new Texture(Gdx.files.internal(path));
         this.sprite = new Sprite(texture);
         sprite.setPosition(tiledmap.spawnX, tiledmap.spawnY);
-        TextureAtlas textureAtlas = new TextureAtlas(Gdx.files.internal(filePath));
-        this.walkingRightAnimation = new Animation(1f/15f, textureAtlas.getRegions());
-        this.health = 3;
+        TextureAtlas textureAtlasRight = new TextureAtlas(Gdx.files.internal(filePathRight));
+        TextureAtlas textureAtlasLeft = new TextureAtlas(Gdx.files.internal(filePathLeft));
+        TextureAtlas textureAtlasUp = new TextureAtlas(Gdx.files.internal(filePathUp));
+        TextureAtlas textureAtlasDown = new TextureAtlas(Gdx.files.internal(filePathDown));
+        this.walkingRightAnimation = new Animation(1f/15f, textureAtlasRight.getRegions());
+        this.walkingLeftAnimation = new Animation(1f/15f, textureAtlasLeft.getRegions());
+        this.walkingUpAnimation = new Animation(1f/15f, textureAtlasUp.getRegions());
+        this.walkingDownAnimation = new Animation(1f/15f, textureAtlasDown.getRegions());
+        this.health = health;
 
     }
 
@@ -192,7 +204,19 @@ public class Hero extends Image {
     public void draw (SpriteBatch sb){
         if (this.heroMovement()){ // Hero is moving
             elapsedTime += Gdx.graphics.getDeltaTime();
-            sb.draw((TextureAtlas.AtlasRegion)this.walkingRightAnimation.getKeyFrame(elapsedTime,true),sprite.getX(),sprite.getY());
+            if (dx < 0){
+                sb.draw((TextureAtlas.AtlasRegion)this.walkingLeftAnimation.getKeyFrame(elapsedTime,
+                        true),sprite.getX(),sprite.getY());
+            } else if (dx > 0){
+                sb.draw((TextureAtlas.AtlasRegion)this.walkingRightAnimation.getKeyFrame(elapsedTime,
+                        true),sprite.getX(),sprite.getY());
+            } else if (dy < 0){
+                sb.draw((TextureAtlas.AtlasRegion)this.walkingDownAnimation.getKeyFrame(elapsedTime,
+                        true),sprite.getX(),sprite.getY());
+            } else {
+                sb.draw((TextureAtlas.AtlasRegion)this.walkingUpAnimation.getKeyFrame(elapsedTime,
+                        true),sprite.getX(),sprite.getY());
+            }
         } else { // Hero is not moving
             elapsedTime = 0f;
             sprite.draw(sb);
@@ -204,6 +228,73 @@ public class Hero extends Image {
      */
     public boolean isInExitArea(){
         if(Intersector.overlaps(sprite.getBoundingRectangle(), tiledMap.exitArea)){
+            return true;
+        }
+        return false;
+    }
+
+    // automates the movement of platforms and hero if he's on a platform
+    public void platformBusiness(){
+
+        for (int i = 0; i < tiledMap.getNumberOfPlatforms(); i++) {
+            if (tiledMap.platformMovementArray[i]) {
+                if (tiledMap.platformSpriteArray[i].getX() <= tiledMap.platformRight[i]) {
+                    tiledMap.platformSpriteArray[i].setPosition(tiledMap.platformSpriteArray[i].getX() + 1, tiledMap.platformSpriteArray[i].getY());
+                } else {
+                    tiledMap.platformMovementArray[i] = false;
+                }
+            }
+            else {
+                if (tiledMap.platformSpriteArray[i].getX() >= tiledMap.platformLeft[i]) {
+                    tiledMap.platformSpriteArray[i].setPosition(tiledMap.platformSpriteArray[i].getX() - 1, tiledMap.platformSpriteArray[i].getY());
+                } else {
+                    tiledMap.platformMovementArray[i] = true;
+                }
+            }
+            Vector2 heroPosition = new Vector2(this.sprite.getX() + this.sprite.getWidth()/2,
+                    this.sprite.getY() + this.sprite.getHeight()/5);
+            for (int j = 0; j < tiledMap.getNumberOfPlatforms(); j++) {
+                if (tiledMap.platformSpriteArray[j].getBoundingRectangle().contains(heroPosition)) {
+                    tiledMap.isOnPlatformArray[j] = true;
+                } else {
+                    tiledMap.isOnPlatformArray[j] = false;
+                }
+            }
+            if (tiledMap.isOnPlatformArray[i]) {
+                if ((tiledMap.platformMovementArray[i] && this.sprite.getX() <= (tiledMap.platformRight[i] + tiledMap.platformSpriteArray[i].getWidth()))) {
+                    this.sprite.setPosition(this.sprite.getX() + 1, this.sprite.getY());
+                }
+                else if (!tiledMap.platformMovementArray[i] && this.sprite.getX() >= tiledMap.platformLeft[i] - tiledMap.platformSpriteArray[i].getWidth()) {
+                    this.sprite.setPosition(this.sprite.getX() - 1, this.sprite.getY());
+                }
+            }
+        }
+        for (int k = 0; k < tiledMap.getNumberOfPlatforms(); k++){
+            if(tiledMap.isOnPlatformArray[k]){
+                isOnPlatform = true;
+                return;
+            }
+        }
+        isOnPlatform = false;
+    }
+
+    public boolean checkDeath(){
+        for (Rectangle object : tiledMap.water){
+            if (Intersector.overlaps(sprite.getBoundingRectangle(), object) && !isOnPlatform){
+                return true;
+            }
+        }
+        for (Rectangle object : tiledMap.deathBoxes){
+            if (Intersector.overlaps(sprite.getBoundingRectangle(), object)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean deathManager(){
+        if (checkDeath()){
+            health -= 1;
             return true;
         }
         return false;
