@@ -8,6 +8,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -47,9 +48,12 @@ public class DungeonTransition3 implements Screen, InputProcessor {
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
+        hero = new Hero("hero1.png", tiledMap, 3, "anim1.atlas",
                 "anim1.atlas", "anim1.atlas", "anim1.atlas");
+
+        System.out.println(hero.sprite.getHeight());
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
+
 
         image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
         image.setPosition(300,400);

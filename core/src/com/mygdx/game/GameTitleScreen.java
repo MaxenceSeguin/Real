@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.Maps.DungeonTransition3;
 import com.mygdx.game.Maps.TestScreen;
 
 public class GameTitleScreen implements InputProcessor, Screen {
@@ -113,7 +114,7 @@ public class GameTitleScreen implements InputProcessor, Screen {
 
     @Override
     public boolean keyUp(int keycode) {
-        game.setScreen(new TestScreen(game, settings));
+        game.setScreen(new DungeonTransition3(game, settings));
         return false;
     }
 

@@ -6,7 +6,7 @@
    eJzt1zESABAMBVFdGMadVbi1lE7gG7bYJs2bRMVyCFFU8ro3RE18fHx8fHx8fHx8sd+29nkV+7/c/1b/1Pvfuv+rvhX/C4tK3gJaNysh
   </data>
  </layer>
- <layer id="7" name="broken bridge 1" width="32" height="32" visible="0">
+ <layer id="7" name="Broken Bridge 1" width="32" height="32" visible="0">
   <data encoding="base64" compression="zlib">
    eJztzaENAAAIwDA04f97kXwAgjaZXgQAAHAla/r4B/Y0NoYAhQ==
   </data>
@@ -28,9 +28,9 @@
   <object id="9" type="COLLISION" x="-50.6667" y="-53.3333" width="1125.33" height="52"/>
  </objectgroup>
  <objectgroup id="4" name="Bridges">
-  <object id="15" x="129.333" y="736" width="96" height="64"/>
+  <object id="15" name="1" x="129.333" y="736" width="96" height="64"/>
  </objectgroup>
- <layer id="10" name="Tile Layer 4" width="32" height="32">
+ <layer id="10" name="Bridge 1" width="32" height="32">
   <data encoding="base64" compression="zlib">
    eJztwQENAAAAwqD3T20PBxQAAADwbhAAAAE=
   </data>

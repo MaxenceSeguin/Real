@@ -17,15 +17,13 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.video.VideoPlayer;
-import com.badlogic.gdx.video.VideoPlayerCreator;
 import com.mygdx.game.GameTitleScreen;
 
 import java.io.FileNotFoundException;
 
-public class Introduction implements InputProcessor, Screen {
+public class Introduction /*implements InputProcessor, Screen */{
 
-    public PerspectiveCamera cam;
+    /*public PerspectiveCamera cam;
     public CameraInputController inputController;
     public ModelInstance instance;
     public Environment environment;
@@ -154,5 +152,5 @@ public class Introduction implements InputProcessor, Screen {
     @Override
     public boolean scrolled(int amount) {
         return false;
-    }
+    }*/
 }
