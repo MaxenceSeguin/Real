@@ -1,3 +1,7 @@
+/**
+ * This class holds all the map information.
+ */
+
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
@@ -19,16 +23,20 @@ import com.badlogic.gdx.utils.SerializationException;
 import java.util.ArrayList;
 
 public class TiledMapPlus {
+
     private TiledMap tiledMap;
     public int width;
     public int height;
     public OrthogonalTiledMapRenderer tiledMapRenderer;
+
     public Rectangle[] collisionBoxes;
     public Bridge[] bridges;
     public Teleporter[] teleporters;
     public Rectangle[] deathBoxes;
     public Rectangle[] water;
     public Rectangle exitArea;
+    public Rectangle backArea;
+    public Rectangle[] dialogTriggeringBoxes;
     public float spawnX=0, spawnY=0;
     public ArrayList<InventoryItem> items;
 
@@ -40,6 +48,9 @@ public class TiledMapPlus {
     public boolean[] isOnPlatformArray;
     public float[] platformLeft;
     public float[] platformRight;
+
+    public Sprite[] rockSprite;
+    public MovableObject[] rocks;
 
 
     public TiledMapPlus(String fileLocation, String object[]){
@@ -56,12 +67,32 @@ public class TiledMapPlus {
         getCollisionBoxes();
         setSpawnArea();
         getExitArea();
+        getBackArea();
         getItems(object);
         getPlatforms();
         getDeathBoxes();
         getWater();
+        getDialogBoxes();
+        //getRocks();
 
     }
+
+
+
+    public void getRocks(){
+        int numRocks = 9;
+        rockSprite = new Sprite[numRocks];
+
+        rocks = new MovableObject[numRocks];
+        for(int i=0;i<numRocks;i++){
+            rocks[i] = new MovableObject("Rock.png",64*(i+1),64*(i+1));
+        }
+
+        for(int i=0;i<numRocks;i++){
+            rockSprite[i] = rocks[i].getSprite();
+        }
+    }
+
 
     /**
      * This method gather all the wanted objects of the tiled map.
@@ -94,6 +125,7 @@ public class TiledMapPlus {
         }
     }
 
+
     /**
      * This method get the area within which the hero will be teleported to the next map.
      * It will look for a layer named "Next level".
@@ -111,6 +143,23 @@ public class TiledMapPlus {
     }
 
     /**
+     * This method get the area within which the hero will be teleported to the next map.
+     * It will look for a layer named "Next level".
+     */
+    private void getBackArea(){
+        MapLayer bridgesObjectLayer = tiledMap.getLayers().get("Last level");
+        MapObjects objects;
+        try {
+            objects = bridgesObjectLayer.getObjects();
+        } catch (NullPointerException e) {
+            System.out.println("No 'Last level' layer detected in the map. Consider adding one.");
+            return;
+        }
+        backArea = ((RectangleMapObject)objects.get(0)).getRectangle();
+    }
+
+
+    /**
      * This method sets the spawning coordinates on this map.
      */
     private void setSpawnArea(){
@@ -121,6 +170,7 @@ public class TiledMapPlus {
         } catch (NullPointerException e){}
 
     }
+
 
     /**
      * This method create a Bridge object for every object in the bridge layer of the map and then
@@ -151,6 +201,7 @@ public class TiledMapPlus {
             i++;
         }
     }
+
 
     /**
      * This method initializes all the platform.
@@ -201,16 +252,23 @@ public class TiledMapPlus {
         }
     }
 
+
+    /**
+     * Returns the number of platform (length of platformSpriteArray)
+     */
     public int getNumberOfPlatforms(){
         return platformSpriteArray.length;
     }
 
+
+    /**
+     * Displays all the platforms on the map.
+     */
     public void drawPlatforms(SpriteBatch sb){
         for (int i = 0; i < getNumberOfPlatforms(); i++) {
             platformSpriteArray[i].draw(sb);
         }
     }
-
 
 
     /**
@@ -249,6 +307,10 @@ public class TiledMapPlus {
         }
     }
 
+    /**
+     * This methods collects all the objects of the Water layer of the tiledmap and adds
+     * their bounding rectangle in the water array.
+     */
     private void getWater(){
         MapLayer bridgesObjectLayer = tiledMap.getLayers().get("Water");
         MapObjects objects;
@@ -272,6 +334,10 @@ public class TiledMapPlus {
         }
     }
 
+    /**
+     * This methods collects all the objects of the Death layer of the tiledmap and adds
+     * their bounding rectangle in the deathBoxes array.
+     */
     private void getDeathBoxes(){
         MapLayer bridgesObjectLayer = tiledMap.getLayers().get("Death");
         MapObjects objects;
@@ -295,6 +361,37 @@ public class TiledMapPlus {
         }
     }
 
+    /**
+     * This methods collects all the objects of the Dialog layer of the tiledmap and adds
+     * their bounding rectangle in the dialogTriggeringBoxes array.
+     */
+    private void getDialogBoxes(){
+        MapLayer bridgesObjectLayer = tiledMap.getLayers().get("Dialog");
+        MapObjects objects;
+        try {
+            objects = bridgesObjectLayer.getObjects();
+        } catch (NullPointerException e){
+            System.out.println("No dialog");
+            return;
+        }
+
+        int numberOfObject = objects.getCount();
+
+        dialogTriggeringBoxes = new Rectangle[numberOfObject];
+
+        int i = 0;
+
+        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+
+            dialogTriggeringBoxes[i] = rectangleObject.getRectangle();
+            i++;
+        }
+    }
+
+    /**
+     * This methods collects all the objects of the Collision layer of the tiledmap and adds
+     * their bounding rectangle in the collisionBoxes array.
+     */
     private void getCollisionBoxes(){
         MapLayer bridgesObjectLayer = tiledMap.getLayers().get("Collision");
         MapObjects objects;
@@ -317,6 +414,9 @@ public class TiledMapPlus {
             i++;
         }
     }
+
+
+
 
     public TiledMap getMap(){
         return tiledMap;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="15" nextobjectid="30">
+<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="31">
  <tileset firstgid="1" name="Jungle" tilewidth="32" tileheight="32" tilecount="1024" columns="32">
   <image source="lpc-jungle/jungle.png" width="1024" height="1024"/>
  </tileset>
@@ -369,6 +369,9 @@
 0,0,232,233,234,235,236,0,0,0,0,0,0,0,0,161,162,163,0,0,0,0,0,0,0,0,52,53,54,55,56,86
 </data>
  </layer>
+ <objectgroup id="15" name="Last level">
+  <object id="30" x="-13.3333" y="741.333" width="15.3333" height="78"/>
+ </objectgroup>
  <objectgroup id="12" name="Collision">
   <object id="1" x="-35" y="1024" width="1101" height="44"/>
   <object id="2" x="1026" y="-54" width="47" height="1133"/>

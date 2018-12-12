@@ -7,7 +7,9 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -18,6 +20,8 @@ import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
 import com.mygdx.game.TiledMapPlus;
 
+import java.awt.geom.Point2D;
+
 public class DungeonTransition3 implements Screen, InputProcessor {
 
     private GameOrthoCamera camera;
@@ -27,13 +31,13 @@ public class DungeonTransition3 implements Screen, InputProcessor {
     private SpriteBatch sb;
     private Hero hero;
 
-    private Image image;
-
     private Game game;
 
     private GameInterface gameInterface;
 
     private GameSettings settings;
+
+    private Image torch = new Image (new Texture(Gdx.files.internal("torch.png")));
 
 
     public DungeonTransition3(Game aGame, GameSettings settings) {
@@ -48,15 +52,10 @@ public class DungeonTransition3 implements Screen, InputProcessor {
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, 3, "anim1.atlas",
-                "anim1.atlas", "anim1.atlas", "anim1.atlas");
+        hero = settings.hero;
+        hero.refresh(tiledMap);
 
-        System.out.println(hero.sprite.getHeight());
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
-
-
-        image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
-        image.setPosition(300,400);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
 
@@ -70,6 +69,7 @@ public class DungeonTransition3 implements Screen, InputProcessor {
      */
     @Override
     public void render(float delta) {
+
         colorManagement();
 
         camera.updateCamera();
@@ -82,24 +82,27 @@ public class DungeonTransition3 implements Screen, InputProcessor {
 
         hero.draw(sb);
 
+        drawLight();
+
         gameInterface.refresh();
 
-        tiledMap.drawPlatforms(sb);
-
-        hero.platformBusiness();
-
         nextLevelListener();
+        lastLevelListener();
 
         sb.end();
     }
 
-
-
+    void lastLevelListener(){
+        if (hero.isInBackArea()) {
+            settings.refresh(hero);
+            game.setScreen(new DungeonBridge(game, settings));
+        }
+    }
 
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
-            game.setScreen(new River(game, settings));
+            game.setScreen(new DungeonMaze(game, settings));
         }
     }
 
@@ -109,6 +112,12 @@ public class DungeonTransition3 implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
+    void drawLight(){
+        if (hero.light == 1){
+            torch.setPosition((float) camera.bottomLeftCorner.getX(),
+                    (float) camera.bottomLeftCorner.getY());
+        }
+    }
 
 
 

@@ -6,6 +6,7 @@ buildscript {
         mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases" }
         jcenter()
         google()
     }
@@ -53,6 +54,7 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         
     }
 }
@@ -134,8 +136,46 @@ project(":core") {
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        
     }
+}
+
+project(":gdx-video") {
+    apply plugin: "java"
+
+    dependencies {
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    }
+
+}
+
+project(":gdx-video-android") {
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":gdx-video")
+        compile files("libs/android-4.4.jar")
+        compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+    }
+
+}
+
+project(":gdx-video-desktop") {
+    apply plugin: "java"
+
+    configurations {
+        excluded
+        compile.extendsFrom excluded
+    }
+
+    dependencies {
+        compile project(":gdx-video")
+        excluded "com.badlogicgames.gdx:gdx-jnigen:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+
 }
 
 

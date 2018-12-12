@@ -25,9 +25,6 @@ public class JungleTransition3 implements InputProcessor, Screen {
     private SpriteBatch sb;
     private Hero hero;
 
-    private Image image;
-    private boolean draw;
-
     private Game game;
 
     private GameInterface gameInterface;
@@ -40,19 +37,16 @@ public class JungleTransition3 implements InputProcessor, Screen {
 
         game = aGame;
 
-
         tiledMap = new TiledMapPlus("jungle_corridor3.tmx", null);
 
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
-                "anim1.atlas", "anim1.atlas", "anim1.atlas");
-        camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
+        hero = settings.hero;
+        hero.refresh(tiledMap);
 
-        image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
-        image.setPosition(300,400);
+        camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
     }
@@ -69,7 +63,6 @@ public class JungleTransition3 implements InputProcessor, Screen {
 
         camera.updateCamera();
 
-
         tiledMap.tiledMapRenderer.setView(camera);
         tiledMap.tiledMapRenderer.render();
 
@@ -78,11 +71,7 @@ public class JungleTransition3 implements InputProcessor, Screen {
 
         gameInterface.refresh();
 
-        hero = settings.hero;
-
-        if (draw) {
-            image.draw(sb, 1);
-        }
+        hero.draw(sb);
 
         nextLevelListener();
 
@@ -92,7 +81,7 @@ public class JungleTransition3 implements InputProcessor, Screen {
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
-            game.setScreen(new JungleBridge(game, settings));
+            game.setScreen(new River(game, settings));
         }
     }
 
@@ -154,10 +143,6 @@ public class JungleTransition3 implements InputProcessor, Screen {
         if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
             tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
         }
-        if (keycode == Input.Keys.L) {
-            camera.rotate(12);
-            //draw = true;
-        }
         if (keycode == Input.Keys.R) {
             game.setScreen(new JungleBridge(game,settings));
         }
@@ -175,9 +160,6 @@ public class JungleTransition3 implements InputProcessor, Screen {
         }
         if (keycode == Input.Keys.UP || keycode == Input.Keys.DOWN) {
             hero.setDy(0);
-        }
-        if (keycode == Input.Keys.L) {
-            draw = false;
         }
         return false;
     }

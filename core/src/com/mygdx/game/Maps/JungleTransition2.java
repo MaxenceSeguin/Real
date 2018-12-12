@@ -25,14 +25,13 @@ public class JungleTransition2 implements InputProcessor, Screen {
     private SpriteBatch sb;
     private Hero hero;
 
-    private Image image;
-    private boolean draw;
-
     private Game game;
 
     private GameInterface gameInterface;
 
     private GameSettings settings;
+
+    private Image machete = new Image (new Texture(Gdx.files.internal("machete.png")));
 
 
     public JungleTransition2(Game aGame, GameSettings settings) {
@@ -40,22 +39,18 @@ public class JungleTransition2 implements InputProcessor, Screen {
 
         game = aGame;
 
-
         tiledMap = new TiledMapPlus("jungle_corridor2.tmx", null);
 
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
-                "anim1.atlas", "anim1.atlas", "anim1.atlas");
+        hero = settings.hero;
+        hero.refresh(tiledMap);
+
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
-
-        image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
-        image.setPosition(300,400);
-
     }
 
     @Override
@@ -70,7 +65,6 @@ public class JungleTransition2 implements InputProcessor, Screen {
 
         camera.updateCamera();
 
-
         tiledMap.tiledMapRenderer.setView(camera);
         tiledMap.tiledMapRenderer.render();
 
@@ -81,10 +75,9 @@ public class JungleTransition2 implements InputProcessor, Screen {
 
         hero.draw(sb);
 
-        if (draw) {
-            image.draw(sb, 1);
-        }
+        drawMachete();
 
+        lastLevelListener();
         nextLevelListener();
 
         sb.end();
@@ -93,7 +86,7 @@ public class JungleTransition2 implements InputProcessor, Screen {
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
-            game.setScreen(new JungleBridge(game, settings));
+            game.setScreen(new JungleTransition3(game, settings));
         }
     }
 
@@ -103,7 +96,19 @@ public class JungleTransition2 implements InputProcessor, Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
+    void lastLevelListener(){
+        if (hero.isInBackArea()) {
+            settings.refresh(hero);
+            game.setScreen(new JungleBridge(game, settings));
+        }
+    }
 
+    void drawMachete(){
+        if (hero.light == 1){
+            machete.setPosition((float) camera.bottomLeftCorner.getX(),
+                    (float) camera.bottomLeftCorner.getY());
+        }
+    }
 
 
 
@@ -155,10 +160,6 @@ public class JungleTransition2 implements InputProcessor, Screen {
         if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
             tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
         }
-        if (keycode == Input.Keys.L) {
-            camera.rotate(12);
-            //draw = true;
-        }
         if (keycode == Input.Keys.R) {
             game.setScreen(new JungleBridge(game, settings));
         }
@@ -176,9 +177,6 @@ public class JungleTransition2 implements InputProcessor, Screen {
         }
         if (keycode == Input.Keys.UP || keycode == Input.Keys.DOWN) {
             hero.setDy(0);
-        }
-        if (keycode == Input.Keys.L) {
-            draw = false;
         }
         return false;
     }

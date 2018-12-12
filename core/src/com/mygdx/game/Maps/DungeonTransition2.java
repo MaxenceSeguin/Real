@@ -40,21 +40,18 @@ public class DungeonTransition2 implements InputProcessor, Screen {
 
         game = aGame;
 
-
         tiledMap = new TiledMapPlus("dungeon_corridor2.tmx", null);
 
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
-                "anim1.atlas", "anim1.atlas", "anim1.atlas");
+        hero = settings.hero;
+        hero.refresh(tiledMap);
+
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
-
-        image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
-        image.setPosition(300,400);
 
     }
 
@@ -70,7 +67,6 @@ public class DungeonTransition2 implements InputProcessor, Screen {
 
         camera.updateCamera();
 
-
         tiledMap.tiledMapRenderer.setView(camera);
         tiledMap.tiledMapRenderer.render();
 
@@ -81,10 +77,6 @@ public class DungeonTransition2 implements InputProcessor, Screen {
 
         hero.draw(sb);
 
-        if (draw) {
-            image.draw(sb, 1);
-        }
-
         nextLevelListener();
 
         sb.end();
@@ -93,7 +85,7 @@ public class DungeonTransition2 implements InputProcessor, Screen {
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
-            game.setScreen(new JungleBridge(game, settings));
+            game.setScreen(new DungeonBridge(game, settings));
         }
     }
 

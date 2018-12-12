@@ -40,6 +40,10 @@ public class Teleporter {
         this.teleporter1 = teleporter1;
     }
 
+    /**
+     * Teleports the Sprite given as parameters to the according teleporter location (the second one
+     * if we are on the first one and vice versa)
+     */
     public void teleportTo(Sprite object){
         if(readyForActivation == 1){
             object.setPosition(teleporter1.getRectangle().getX(), teleporter1.getRectangle().getY());

@@ -1,3 +1,7 @@
+/**
+ * This class holds the coordinates of the two points that platforms have to travel from and to.
+ */
+
 package com.mygdx.game;
 
 import com.badlogic.gdx.maps.objects.RectangleMapObject;

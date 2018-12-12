@@ -6,13 +6,18 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
+import com.mygdx.game.GameOverScreen;
 import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
 import com.mygdx.game.TiledMapPlus;
+
+import java.awt.geom.Point2D;
 
 public class DungeonBridge implements InputProcessor, Screen {
     private GameOrthoCamera camera;
@@ -28,24 +33,31 @@ public class DungeonBridge implements InputProcessor, Screen {
 
     private GameSettings settings;
 
+    private Animation explosion;
+    private float elapsedTime;
+
 
     public DungeonBridge(Game aGame, GameSettings settings) {
         this.settings = settings;
 
         game = aGame;
 
-        tiledMap = new TiledMapPlus("Dungeonbridge.tmx", null);
+        tiledMap = new TiledMapPlus("Dungeonbridge.tmx", new String[] {"Torch"});
 
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
-                "anim1.atlas", "anim1.atlas", "anim1.atlas");
+        hero = settings.hero;
+        hero.refresh(tiledMap);
 
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
+
+        TextureAtlas textureAtlasRight = new TextureAtlas(Gdx.files.internal("explosion1.atlas"));
+        explosion = new Animation(1f/15f, textureAtlasRight.getRegions());
+
     }
 
     @Override
@@ -56,6 +68,8 @@ public class DungeonBridge implements InputProcessor, Screen {
      */
     @Override
     public void render(float delta) {
+        elapsedTime += Gdx.graphics.getDeltaTime();
+
         colorManagement();
 
         nextLevelListener();
@@ -68,6 +82,8 @@ public class DungeonBridge implements InputProcessor, Screen {
         sb.setProjectionMatrix(camera.combined);
         sb.begin();
 
+        drawExplosion(elapsedTime);
+
         hero.draw(sb);
 
         gameInterface.refresh();
@@ -75,10 +91,33 @@ public class DungeonBridge implements InputProcessor, Screen {
         sb.end();
     }
 
+    int i=0;
+    void drawExplosion(float elapsedTime){
+        Point2D[] location = {
+                new Point2D.Double(200, 800),
+                new Point2D.Double(325, 837),
+                new Point2D.Double(933, 710),
+                new Point2D.Double(615, 613),
+                new Point2D.Double(774, 391),
+                new Point2D.Double(231, 458),
+                new Point2D.Double(295, 293)
+        };
+
+        for (Point2D point : location){
+            sb.draw((TextureAtlas.AtlasRegion)explosion.getKeyFrame(elapsedTime, true),
+                    (float)point.getX(), (float)point.getY());
+        }
+       /* if (elapsedTime%(5*explosion.getAnimationDuration()) < 1){
+            i++;
+            sb.draw((TextureAtlas.AtlasRegion)explosion.getKeyFrame(elapsedTime, true),
+                    (float)location[i%2].getX(), (float)location[i%2].getY());
+        }*/
+    }
+
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
-            game.setScreen(new River(game, settings));
+            game.setScreen(new DungeonTransition3(game, settings));
         }
     }
 
@@ -140,15 +179,14 @@ public class DungeonBridge implements InputProcessor, Screen {
         if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
             tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
         }
-        if (keycode == Input.Keys.L) {
-            camera.rotate(12);
-            //draw = true;
-        }
         if (keycode == Input.Keys.R) {
-            game.setScreen(new JungleBridge(game, settings));
-        }
-        if (keycode == Input.Keys.F) {
-            game.setScreen(new DungeonTransition3(game, settings));
+            if (hero.health == 1){
+                game.setScreen(new GameOverScreen(game, settings, 1));
+            } else {
+                settings.hero.health--;
+                settings.hero.machete = 0;
+                game.setScreen(new DungeonBridge(game, settings));
+            }
         }
 
         return false;

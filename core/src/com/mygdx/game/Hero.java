@@ -25,14 +25,9 @@ public class Hero extends Image {
     private float elapsedTime;
     public int health;
     public boolean isOnPlatform = false;
-
-    public boolean isOnBridge() {
-        return isOnBridge;
-    }
-
-    public void setOnBridge(boolean onBridge) {
-        isOnBridge = onBridge;
-    }
+    public boolean playerBlocked =false;
+    public int light = 0;
+    public int machete = 0;
 
     public Hero(String path, TiledMapPlus tiledmap, int health,
                 String filePathRight, String filePathLeft, String filePathUp, String filePathDown){
@@ -52,47 +47,9 @@ public class Hero extends Image {
 
     }
 
-    public int getIsOnTeleporter() {
-        return isOnTeleporter;
-    }
-
-    public void setIsOnTeleporter(int isOnTeleporter) {
-        this.isOnTeleporter = isOnTeleporter;
-    }
-
-    public void resetDirection(){
-        dx = 0;
-        dy = 0;
-    }
-
-
-
-    public boolean isMoving() {
-        return (Math.abs(dx)+Math.abs(dy))!=0;
-    }
-
-    public int getDx() {
-        return dx;
-    }
-
-    public void setDx(int dx) {
-        this.dx = dx;
-    }
-
-    public int getDy() {
-        return dy;
-    }
-
-    public void setDy(int dy) {
-        this.dy = dy;
-    }
-
-    public Sprite getSprite() {
-        return sprite;
-    }
-
-    public Rectangle getRectangle(){
-        return sprite.getBoundingRectangle();
+    public void refresh(TiledMapPlus tiledmap){
+        this.tiledMap = tiledmap;
+        sprite.setPosition(tiledmap.spawnX, tiledmap.spawnY);
     }
 
     /**
@@ -105,7 +62,8 @@ public class Hero extends Image {
         int heroX = this.getDx();
         int heroY = this.getDy();
 
-        if (this.isMoving() && !isCollision(heroX, heroY) && !isCrossingBrokenBridge(heroX, heroY)){
+        if (this.isMoving() && !isCollision(heroX, heroY) && !isCrossingBrokenBridge(heroX, heroY) &&
+                isAttemptingPush()){
             sprite.setPosition(sprite.getX()+heroX, sprite.getY()+heroY);
             return true;
         }
@@ -198,6 +156,26 @@ public class Hero extends Image {
         return  false;
     }
 
+    private boolean isCollision(Rectangle rock){
+
+        rock.setPosition(rock.getX(), rock.getY()-rock.height);
+
+        /*
+         *  We only treat the rectangle form the COLLISION layer, need improvement if other collision
+         *  shapes are added.
+         */
+        for (Rectangle rectangleObject : tiledMap.collisionBoxes) {
+
+            Rectangle rectangle = rectangleObject;
+            if (Intersector.overlaps(rectangle, rock)) {
+                /* collision happened */
+                return true;
+            }
+        }
+
+        return  false;
+    }
+
     /**
      * This method draws the hero in game accordingly to its movement.
      */
@@ -233,7 +211,16 @@ public class Hero extends Image {
         return false;
     }
 
-    // automates the movement of platforms and hero if he's on a platform
+    public boolean isInBackArea(){
+        if(Intersector.overlaps(sprite.getBoundingRectangle(), tiledMap.backArea)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Automates the movement of platforms and hero if he's on a platform
+     */
     public void platformBusiness(){
 
         for (int i = 0; i < tiledMap.getNumberOfPlatforms(); i++) {
@@ -278,20 +265,36 @@ public class Hero extends Image {
         isOnPlatform = false;
     }
 
+    /**
+     * Check if the hero is in a 'lossing health' state.
+     * Checks whether the hero is on a 'death' box, or if he is on a 'water' box without not being
+     * on a platform.
+     * Return whether he is in a dying state.
+     */
     public boolean checkDeath(){
-        for (Rectangle object : tiledMap.water){
-            if (Intersector.overlaps(sprite.getBoundingRectangle(), object) && !isOnPlatform){
-                return true;
+
+        try {
+            for (Rectangle object : tiledMap.water){
+                if (Intersector.overlaps(sprite.getBoundingRectangle(), object) && !isOnPlatform){
+                    return true;
+                }
             }
-        }
-        for (Rectangle object : tiledMap.deathBoxes){
-            if (Intersector.overlaps(sprite.getBoundingRectangle(), object)){
-                return true;
+        } catch (NullPointerException e){}
+
+        try {
+            for (Rectangle object : tiledMap.deathBoxes){
+                if (Intersector.overlaps(sprite.getBoundingRectangle(), object)){
+                    return true;
+                }
             }
-        }
+        } catch (NullPointerException e){}
         return false;
     }
 
+    /**
+     * If the hero is in a dying state, he loses 1 health.
+     * Return whether he died.
+     */
     public boolean deathManager(){
         if (checkDeath()){
             health -= 1;
@@ -300,5 +303,159 @@ public class Hero extends Image {
         return false;
     }
 
+
+    /**
+     * This method deals with movable objects and what
+     * should occur when an attempt is made to push one
+     *
+     */
+    private boolean isAttemptingPush(){
+        if (tiledMap.rocks == null){
+            return true;
+        }
+        int numRocks = 9;
+        boolean overlapping = false;
+        boolean blocked = false;
+        Rectangle heroPos = this.sprite.getBoundingRectangle(); //Gets the bounding rectangle of the hero
+        heroPos.setX(heroPos.getX()+this.getDx()); //Sets the next step for the hero (x direction)
+        heroPos.setY(heroPos.getY()+this.getDy()); //Sets the next step for the hero (y direction)
+
+        //Loop over all rocks
+        for(int i=0;i<numRocks;i++) {
+            Rectangle objPos = tiledMap.rockSprite[i].getBoundingRectangle(); //Gets the bounding rectangle of the rock (/object)
+            if (Intersector.overlaps(heroPos, objPos)) {
+                Rectangle intersect = new Rectangle();
+                Intersector.intersectRectangles(heroPos,objPos,intersect);
+
+                //Push from left
+                if(intersect.x > heroPos.x && this.getDx() > 0){
+                    //Check for any rocks blocking a push
+                    for(int j=0;j<numRocks;j++){
+                        if(i!=j && tiledMap.rockSprite[i].getX() == tiledMap.rockSprite[j].getX() - tiledMap.rockSprite[j].getWidth()
+                                && tiledMap.rockSprite[i].getY() == tiledMap.rockSprite[j].getY()){
+                            blocked = true;
+                            this.setDx(0);
+                        }
+                    }
+                    if(blocked && !isCollision(objPos)){
+                        tiledMap.rockSprite[i].setPosition(tiledMap.rockSprite[i].getX()+tiledMap.rockSprite[i].getWidth(),
+                                tiledMap.rockSprite[i].getY());
+                        playerBlocked = false;
+                    }
+                }
+
+                //Push from right
+                else if(intersect.x + intersect.width < heroPos.x + heroPos.width && this.getDx() < 0){
+                    //Check for any rocks blocking a push
+                    for(int j=0;j<numRocks;j++){
+                        if(i!=j && tiledMap.rockSprite[i].getX() == tiledMap.rockSprite[j].getX() + tiledMap.rockSprite[j].getWidth()
+                                && tiledMap.rockSprite[i].getY() == tiledMap.rockSprite[j].getY()){
+                            blocked = true;
+                            this.setDx(0);
+                        }
+                    }
+                    if(blocked == false){
+                        tiledMap.rockSprite[i].setPosition(tiledMap.rockSprite[i].getX()-tiledMap.rockSprite[i].getWidth(),
+                                tiledMap.rockSprite[i].getY());
+                        playerBlocked = false;
+                    }
+                }
+
+                //Push from bottom
+                else if(intersect.y > heroPos.y && this.getDy() > 0){
+                    //Check for any rocks blocking a push
+                    for(int j=0;j<numRocks;j++){
+                        if(i!=j && tiledMap.rockSprite[i].getY() == tiledMap.rockSprite[j].getY() - tiledMap.rockSprite[j].getHeight()
+                                && tiledMap.rockSprite[i].getX() == tiledMap.rockSprite[j].getX()){
+                            blocked = true;
+                            this.setDy(0);
+                        }
+                    }
+                    if(blocked == false){
+                        tiledMap.rockSprite[i].setPosition(tiledMap.rockSprite[i].getX(),
+                                tiledMap.rockSprite[i].getY()+tiledMap.rockSprite[i].getHeight());
+                        playerBlocked = false;
+                    }
+                }
+
+                //Push from top
+                else if(intersect.y + intersect.height < heroPos.y + heroPos.height && this.getDy() < 0){
+                    //Check for any rocks blocking a push
+                    for(int j=0;j<numRocks;j++){
+                        if(i!=j && tiledMap.rockSprite[i].getY() == tiledMap.rockSprite[j].getY() + tiledMap.rockSprite[j].getHeight()
+                                && tiledMap.rockSprite[i].getX() == tiledMap.rockSprite[j].getX()){
+                            blocked = true;
+                            this.setDy(0);
+                        }
+                    }
+                    if(blocked == false){
+                        tiledMap.rockSprite[i].setPosition(tiledMap.rockSprite[i].getX(),
+                                tiledMap.rockSprite[i].getY()-tiledMap.rockSprite[i].getHeight());
+                        playerBlocked = false;
+                    }
+
+                }
+                blocked = false;
+                overlapping = true;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * Getters and setters.
+     */
+
+    public int getIsOnTeleporter() {
+        return isOnTeleporter;
+    }
+
+    public void setIsOnTeleporter(int isOnTeleporter) {
+        this.isOnTeleporter = isOnTeleporter;
+    }
+
+    public void resetDirection(){
+        dx = 0;
+        dy = 0;
+    }
+
+
+
+    public boolean isMoving() {
+        return (Math.abs(dx)+Math.abs(dy))!=0;
+    }
+
+    public int getDx() {
+        return dx;
+    }
+
+    public void setDx(int dx) {
+        this.dx = dx;
+    }
+
+    public int getDy() {
+        return dy;
+    }
+
+    public void setDy(int dy) {
+        this.dy = dy;
+    }
+
+    public Sprite getSprite() {
+        return sprite;
+    }
+
+    public Rectangle getRectangle(){
+        return sprite.getBoundingRectangle();
+    }
+
+    public boolean isOnBridge() {
+        return isOnBridge;
+    }
+
+    public void setOnBridge(boolean onBridge) {
+        isOnBridge = onBridge;
+    }
 
 }

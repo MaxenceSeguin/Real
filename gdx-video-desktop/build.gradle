@@ -1,0 +1,16 @@
+apply plugin: "java"
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/"]
+        }
+    }
+}
+eclipse.project {
+    name = "Real-gdx-video-desktop"
+}
+
+dependencies {
+    implementation files('build/libs/gdx-video-desktop-1.0.jar')
+    implementation files('gdx-video-desktop-natives.jar')
+}

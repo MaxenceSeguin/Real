@@ -8,16 +8,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Maps.TestScreen;
-import com.mygdx.game.MyGdxGame;
 
 
 public class OptionScreen implements Screen, InputProcessor {
@@ -95,6 +87,9 @@ public class OptionScreen implements Screen, InputProcessor {
         sb.end();
     }
 
+    /**
+     * Display the image of Sound Effects option according to the settings.
+     */
     private void drawSoundEffects(){
         if(settings.soundEffects){
             seOn.draw(sb, 1);
@@ -103,6 +98,9 @@ public class OptionScreen implements Screen, InputProcessor {
         }
     }
 
+    /**
+     * Display the image of Game Music option according to the settings.
+     */
     private void drawGameMusic(){
         if(settings.gameMusic){
             gmOn.draw(sb, 1);
@@ -111,12 +109,24 @@ public class OptionScreen implements Screen, InputProcessor {
         }
     }
 
+    /**
+     * Returns whether or not the coordinates of the click (passed as parameters) are inside the
+     * image (passed as parameter) bounding rectangle.
+     */
     private boolean clickedInside(int x , int y, Image image){
         if (x > image.getX() && x < image.getX() + image.getWidth()
                 && y > image.getY() && y < image.getY() + image.getHeight()){
             return true;
         }
         return false;
+    }
+
+    /**
+     * Return the abscissa that the image should be displayed at so that it is centered on the
+     * screen.
+     */
+    float centerX(Image image){
+        return 1920/2 - image.getWidth()/2;
     }
 
     @Override
@@ -207,12 +217,5 @@ public class OptionScreen implements Screen, InputProcessor {
     @Override
     public void dispose() {
 
-    }
-
-    float centerX(Image image){
-        return 1920/2 - image.getWidth()/2;
-    }
-    float centerY(Image image){
-        return 1080/2 - image.getHeight()/2;
     }
 }

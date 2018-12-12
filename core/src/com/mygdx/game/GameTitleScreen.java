@@ -17,17 +17,18 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.Maps.DungeonTransition1;
 import com.mygdx.game.Maps.DungeonTransition3;
 import com.mygdx.game.Maps.TestScreen;
 
 public class GameTitleScreen implements InputProcessor, Screen {
 
-    Game game;
-    SpriteBatch sb;
-    OrthographicCamera camera;
-    Image background, optionButton, playButton, credits, gmOff, gmOn, back, quit, seOff, seOn;
-    float delay;
-    GameSettings settings;
+    private Game game;
+    private SpriteBatch sb;
+    private OrthographicCamera camera;
+    private Image background, optionButton, playButton, credits, gmOff, gmOn, back, quit, seOff, seOn;
+    private float delay;
+    private GameSettings settings;
 
     public GameTitleScreen(Game aGame) {
 
@@ -107,6 +108,18 @@ public class GameTitleScreen implements InputProcessor, Screen {
 
     }
 
+    /**
+     * Returns whether or not the coordinates of the click (passed as parameters) are inside the
+     * image (passed as parameter) bounding rectangle.
+     */
+    private boolean clickedInside(int x , int y, Image image){
+        if (x > image.getX() && x < image.getX() + image.getWidth()
+                && y > image.getY() && y < image.getY() + image.getHeight()){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean keyDown(int keycode) {
         return false;
@@ -114,7 +127,7 @@ public class GameTitleScreen implements InputProcessor, Screen {
 
     @Override
     public boolean keyUp(int keycode) {
-        game.setScreen(new DungeonTransition3(game, settings));
+        game.setScreen(new DungeonTransition1(game, settings));
         return false;
     }
 
@@ -135,8 +148,7 @@ public class GameTitleScreen implements InputProcessor, Screen {
         float dx = camera.viewportWidth/Gdx.graphics.getWidth();
         float dy = camera.viewportHeight/Gdx.graphics.getHeight();
 
-        if (screenX > optionButton.getX() && screenX < optionButton.getX() + optionButton.getWidth()
-            && screenY > optionButton.getY() && screenY < optionButton.getY() + optionButton.getHeight()){
+        if (clickedInside(screenX, screenY, optionButton)){
             game.setScreen(new OptionScreen(game, settings));
         }
         return false;

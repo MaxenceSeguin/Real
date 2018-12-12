@@ -40,19 +40,16 @@ public class JungleTransition4 implements InputProcessor, Screen {
 
         game = aGame;
 
-
         tiledMap = new TiledMapPlus("jungle_corridor4.tmx", null);
 
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
-                "anim1.atlas", "anim1.atlas", "anim1.atlas");
-        camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
+        hero = settings.hero;
+        hero.refresh(tiledMap);
 
-        image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
-        image.setPosition(300,400);
+        camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
     }

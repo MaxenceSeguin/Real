@@ -36,14 +36,16 @@ public class JungleBridge implements Screen, InputProcessor {
 
         game = aGame;
 
-        tiledMap = new TiledMapPlus("jungle_bridges.tmx", null);
+        tiledMap = new TiledMapPlus("jungle_bridges.tmx",
+                new String[] {"machete"});
 
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
-                "anim1.atlas", "anim1.atlas", "anim1.atlas");
+        hero = settings.hero;
+        hero.refresh(tiledMap);
+
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
@@ -79,7 +81,7 @@ public class JungleBridge implements Screen, InputProcessor {
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
-            game.setScreen(new River(game, settings));
+            game.setScreen(new JungleTransition2(game, settings));
         }
     }
 
@@ -141,15 +143,8 @@ public class JungleBridge implements Screen, InputProcessor {
         if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
             tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
         }
-        if (keycode == Input.Keys.L) {
-            camera.rotate(12);
-            //draw = true;
-        }
         if (keycode == Input.Keys.R) {
             game.setScreen(new JungleBridge(game, settings));
-        }
-        if (keycode == Input.Keys.F) {
-            game.setScreen(new DungeonTransition3(game, settings));
         }
 
         return false;

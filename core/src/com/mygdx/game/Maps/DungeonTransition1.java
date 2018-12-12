@@ -45,15 +45,14 @@ public class DungeonTransition1 implements Screen, InputProcessor {
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
-                "anim1.atlas", "anim1.atlas", "anim1.atlas");
+        hero = new Hero("hero1.png", tiledMap, 3,
+                "anim1.atlas", "anim1.atlas",
+                "anim1.atlas", "anim1.atlas");
+        hero.refresh(tiledMap);
 
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
-
-        image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
-        image.setPosition(300,400);
 
     }
 
@@ -80,10 +79,6 @@ public class DungeonTransition1 implements Screen, InputProcessor {
 
         hero.draw(sb);
 
-        if (draw) {
-            image.draw(sb, 1);
-        }
-
         nextLevelListener();
 
         sb.end();
@@ -92,7 +87,7 @@ public class DungeonTransition1 implements Screen, InputProcessor {
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
-            game.setScreen(new JungleBridge(game, settings));
+            game.setScreen(new DungeonTransition2(game, settings));
         }
     }
 

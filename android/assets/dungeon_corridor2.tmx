@@ -81,14 +81,14 @@
 </data>
  </layer>
  <objectgroup id="3" name="Collision">
-  <object id="1" x="802.667" y="-4" width="33.3333" height="612"/>
-  <object id="2" x="146.667" y="573.333" width="658.667" height="34.6667"/>
+  <object id="1" x="802.667" y="-4" width="14" height="600.333"/>
+  <object id="2" x="137" y="573.333" width="668.334" height="23"/>
   <object id="3" x="904" y="1.33333" width="29.3333" height="693.333"/>
   <object id="4" x="142.667" y="681.333" width="769.333" height="22.6667"/>
-  <object id="5" x="56" y="650.667" width="134.667" height="36"/>
+  <object id="5" x="56" y="658.667" width="134.667" height="28"/>
   <object id="6" x="44" y="392" width="38.6667" height="268"/>
   <object id="7" x="18.6667" y="-12" width="40" height="412"/>
-  <object id="8" x="136" y="-12" width="28" height="620"/>
+  <object id="8" x="136" y="-12" width="28" height="608.333"/>
   <object id="10" x="6" y="-55" width="224" height="44"/>
   <object id="11" x="773" y="-63" width="222" height="60"/>
  </objectgroup>

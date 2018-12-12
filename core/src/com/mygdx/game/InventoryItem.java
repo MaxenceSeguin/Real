@@ -6,11 +6,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class InventoryItem {
 
-    public RectangleMapObject coordinates;
-    public Image image;
-    public boolean collected;
-    public Rectangle rectangle;
-    public String itemName;
+    public RectangleMapObject coordinates; /** Coordinates of the image on the map **/
+    public Image image;                    /** Image to display **/
+    public boolean collected;              /** Whether the item has been collected **/
+    public Rectangle rectangle;            /** Bounding rectangle of the item on the map **/
+    public String itemName;                /** Name of the item **/
 
     public InventoryItem(RectangleMapObject coordinates, Image sprite, boolean collected,
                          String itemName){

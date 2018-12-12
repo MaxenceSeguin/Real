@@ -2,7 +2,12 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 import java.awt.geom.Point2D;
 
@@ -12,12 +17,16 @@ import java.awt.geom.Point2D;
 public class GameOrthoCamera extends OrthographicCamera {
     public Sprite heroSprite;
     public TiledMapPlus tiledMap;
+    /**
+     * These attributes hold the coordinates of the corners of the camera.
+     */
     public Point2D upperRightCorner;
     public Point2D bottomLeftCorner;
+    public Point2D upperLeftCorner;
 
     public GameOrthoCamera(Sprite heroSprite, TiledMapPlus tiledMap){
         super();
-        this.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.setToOrtho(false, 800, 450);
         this.update();
         this.heroSprite = heroSprite;
         this.tiledMap = tiledMap;
@@ -25,6 +34,8 @@ public class GameOrthoCamera extends OrthographicCamera {
                 this.position.y + this.viewportHeight/2);
         this.bottomLeftCorner = new Point2D.Float(this.position.x - this.viewportWidth/2,
                 this.position.y - this.viewportHeight/2);
+        this.upperLeftCorner = new Point2D.Float(this.position.x - this.viewportWidth/2,
+                this.position.y + this.viewportHeight/2);
 
     }
 
@@ -48,6 +59,22 @@ public class GameOrthoCamera extends OrthographicCamera {
                 this.position.y + this.viewportHeight/2);
         this.bottomLeftCorner.setLocation(this.position.x - this.viewportWidth/2,
                 this.position.y - this.viewportHeight/2);
+        this.upperLeftCorner = new Point2D.Float(this.position.x - this.viewportWidth/2,
+                this.position.y + this.viewportHeight/2);
+    }
+
+    /**
+     * Displays the given dialog box when the hero is overlapping the 'dialog triggering' area.
+     */
+    public void showDialog(String filePath, SpriteBatch sb){
+        for (Rectangle object : tiledMap.dialogTriggeringBoxes){
+            if (Intersector.overlaps(object, heroSprite.getBoundingRectangle())){
+                Image image = new Image(new Texture(Gdx.files.internal(filePath)));
+                image.setPosition((float)this.upperLeftCorner.getX()+12,
+                        (float)this.upperLeftCorner.getY() -12 -image.getHeight());
+                image.draw(sb, 1);
+            }
+        }
     }
 
 }

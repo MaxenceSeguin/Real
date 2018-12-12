@@ -16,6 +16,9 @@ public class Bridge {
         broken = brokenSprite;
     }
 
+    /**
+     * Changes the sprite of the bridge from healthy to broken.
+     */
     public void setBrokenVisible() {
         broken.setVisible(true);
         healthy.setVisible(false);
@@ -37,6 +40,9 @@ public class Bridge {
         this.rectangleObject = rectangleObject;
     }
 
+    /**
+     * Lower the resistance of the bridge by one (but stays positive).
+     */
     public void weakenBridge(){
         this.resistance = Math.max(this.resistance-1, 0);
     }

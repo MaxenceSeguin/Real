@@ -41,21 +41,18 @@ public class DungeonTransition4 implements Screen, InputProcessor {
 
         game = aGame;
 
-
         tiledMap = new TiledMapPlus("dungeon_corridor4.tmx", null);
 
         Gdx.input.setInputProcessor(this);
 
-        hero = settings.hero;
+        sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
-                "anim1.atlas", "anim1.atlas", "anim1.atlas");
+        hero = settings.hero;
+        hero.refresh(tiledMap);
+
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
-
-        image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
-        image.setPosition(300,400);
 
     }
 
@@ -71,7 +68,6 @@ public class DungeonTransition4 implements Screen, InputProcessor {
 
         camera.updateCamera();
 
-
         tiledMap.tiledMapRenderer.setView(camera);
         tiledMap.tiledMapRenderer.render();
 
@@ -82,10 +78,6 @@ public class DungeonTransition4 implements Screen, InputProcessor {
 
         hero.draw(sb);
 
-        if (draw) {
-            image.draw(sb, 1);
-        }
-
         nextLevelListener();
 
         sb.end();
@@ -94,7 +86,7 @@ public class DungeonTransition4 implements Screen, InputProcessor {
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
-            game.setScreen(new JungleBridge(game, settings));
+            game.setScreen(new JungleTransition1(game, settings));
         }
     }
 
@@ -156,10 +148,6 @@ public class DungeonTransition4 implements Screen, InputProcessor {
         if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
             tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
         }
-        if (keycode == Input.Keys.L) {
-            camera.rotate(12);
-            //draw = true;
-        }
         if (keycode == Input.Keys.R) {
             game.setScreen(new JungleBridge(game, settings));
         }
@@ -177,9 +165,6 @@ public class DungeonTransition4 implements Screen, InputProcessor {
         }
         if (keycode == Input.Keys.UP || keycode == Input.Keys.DOWN) {
             hero.setDy(0);
-        }
-        if (keycode == Input.Keys.L) {
-            draw = false;
         }
         return false;
     }

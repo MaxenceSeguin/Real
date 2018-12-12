@@ -25,8 +25,6 @@ public class River implements InputProcessor, Screen {
     private SpriteBatch sb;
     private Hero hero;
 
-    private Image image;
-
     private Game game;
 
     private GameInterface gameInterface;
@@ -46,12 +44,10 @@ public class River implements InputProcessor, Screen {
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, settings.hero.health, "anim1.atlas",
-                "anim1.atlas", "anim1.atlas", "anim1.atlas");
-        camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
+        hero = settings.hero;
+        hero.refresh(tiledMap);
 
-        image = new Image(new Texture(Gdx.files.internal("badlogic.jpg")));
-        image.setPosition(300,400);
+        camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
 
@@ -92,8 +88,6 @@ public class River implements InputProcessor, Screen {
 
         sb.end();
     }
-
-
 
 
     void nextLevelListener(){
@@ -161,13 +155,9 @@ public class River implements InputProcessor, Screen {
         if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
             tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
         }
-        if (keycode == Input.Keys.L) {
-            camera.rotate(12);
-            //draw = true;
-        }
         if (keycode == Input.Keys.R) {
             settings.refresh(hero);
-            game.setScreen(new DungeonBridge(game, settings));
+            game.setScreen(new JungleTransition4(game, settings));
         }
         return false;
     }

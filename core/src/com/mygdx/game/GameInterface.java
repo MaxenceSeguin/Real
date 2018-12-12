@@ -15,6 +15,8 @@ public class GameInterface {
     public SpriteBatch sb;
     public GameOrthoCamera camera;
     public Image heart;
+    public Image lowLight = new Image(new Texture(Gdx.files.internal("lowlight.png")));
+    public Image brightLight= new Image(new Texture(Gdx.files.internal("brightlight.png")));
     public TiledMapPlus tiledMap;
 
     public GameInterface(Hero hero, SpriteBatch sb, GameOrthoCamera camera, TiledMapPlus tiledMap){
@@ -32,6 +34,7 @@ public class GameInterface {
         refreshHeart();
         itemCollectionListener();
         refreshInventoryItems();
+        drawRocks();
 
     }
 
@@ -55,6 +58,7 @@ public class GameInterface {
         for (InventoryItem item : tiledMap.items){
             if (item.collected) {
                 if (item.itemName == "heart") {
+                    // stop displaying it
                     item.coordinates.getRectangle().setPosition(tiledMap.width, tiledMap.height);
                 } else {
                     item.coordinates.getRectangle().setPosition((float) camera.bottomLeftCorner.getX(),
@@ -85,6 +89,43 @@ public class GameInterface {
     private void itemCollected(InventoryItem item){
         if (item.itemName == "heart"){
             hero.health ++;
+        } else if (item.itemName == "Torch"){
+            hero.light = 1;
+        } else if (item.itemName == "machete"){
+            hero.machete = 1;
+        }
+    }
+
+    /**
+     * Displays the rocks.
+     */
+    private void drawRocks(){
+        if (tiledMap.rocks == null){
+            return;
+        }
+        int numRocks = 9;
+        for(int i=0;i<numRocks;i++) {
+            tiledMap.rockSprite[i].draw(sb);
+        }
+    }
+
+    public void setLowLight(){
+        lowLight.setPosition(hero.sprite.getX()-lowLight.getWidth()/2+10,
+                hero.sprite.getY()-lowLight.getHeight()/2+30);
+        lowLight.draw(sb, 1);
+    }
+
+    public void setBrigthLight(){
+        brightLight.setPosition(hero.sprite.getX()-brightLight.getWidth()/2+10,
+                hero.sprite.getY()-brightLight.getHeight()/2+30);
+        brightLight.draw(sb, 1);
+    }
+
+    public void setLight(int i){
+        if (i == 0){
+            setLowLight();
+        } else {
+            setBrigthLight();
         }
     }
 
