@@ -6,28 +6,25 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
+import com.mygdx.game.GameOverScreen;
 import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
+import com.mygdx.game.Overgrowth;
 import com.mygdx.game.TiledMapPlus;
 
-public class DungeonTransition4 implements Screen, InputProcessor {
-
-
+public class JungleMaze implements InputProcessor, Screen {
     private GameOrthoCamera camera;
 
     private TiledMapPlus tiledMap;
 
     private SpriteBatch sb;
     private Hero hero;
-
-    private Image image;
-    private boolean draw;
 
     private Game game;
 
@@ -36,12 +33,12 @@ public class DungeonTransition4 implements Screen, InputProcessor {
     private GameSettings settings;
 
 
-    public DungeonTransition4(Game aGame, GameSettings settings) {
+    public JungleMaze(Game aGame, GameSettings settings) {
         this.settings = settings;
 
         game = aGame;
 
-        tiledMap = new TiledMapPlus("dungeon_corridor4.tmx", null);
+        tiledMap = new TiledMapPlus("jungle_overgrowth.tmx" ,null);
 
         Gdx.input.setInputProcessor(this);
 
@@ -68,6 +65,8 @@ public class DungeonTransition4 implements Screen, InputProcessor {
 
         camera.updateCamera();
 
+        deathManagement();
+
         tiledMap.tiledMapRenderer.setView(camera);
         tiledMap.tiledMapRenderer.render();
 
@@ -79,6 +78,7 @@ public class DungeonTransition4 implements Screen, InputProcessor {
         hero.draw(sb);
 
         nextLevelListener();
+        lastLevelListener();
 
         sb.end();
     }
@@ -86,7 +86,14 @@ public class DungeonTransition4 implements Screen, InputProcessor {
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
-            game.setScreen(new JungleTransition1(game, settings));
+            game.setScreen(new JungleTransition3(game, settings));
+        }
+    }
+
+    void lastLevelListener(){
+        if (hero.isInBackArea()) {
+            settings.refresh(hero);
+            game.setScreen(new JungleTransition2(game, settings));
         }
     }
 
@@ -96,7 +103,23 @@ public class DungeonTransition4 implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
+    void deathManagement(){
+        if (hero.deathManager()){
+            if (hero.health == 0){
+                game.setScreen(new GameOverScreen(game, settings, 2));
+            } else {
+                game.setScreen(new JungleMaze(game, settings));
+            }
+        }
+    }
 
+    private void cutOvergrowth(){
+        for (Overgrowth og : tiledMap.overgrowth){
+            if (Intersector.overlaps(og.sprite, hero.sprite.getBoundingRectangle())){
+                og.hide();
+            }
+        }
+    }
 
 
 
@@ -145,8 +168,8 @@ public class DungeonTransition4 implements Screen, InputProcessor {
         if (keycode == Input.Keys.DOWN) {
             hero.setDy(-2);
         }
-        if (keycode == Input.Keys.R) {
-            game.setScreen(new JungleBridge(game, settings));
+        if (keycode == Input.Keys.C && hero.machete == 1){
+            cutOvergrowth();
         }
         return false;
     }

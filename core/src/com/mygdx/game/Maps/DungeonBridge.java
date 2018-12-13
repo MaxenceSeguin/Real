@@ -176,9 +176,6 @@ public class DungeonBridge implements InputProcessor, Screen {
         if (keycode == Input.Keys.DOWN) {
             hero.setDy(-2);
         }
-        if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
-            tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
-        }
         if (keycode == Input.Keys.R) {
             if (hero.health == 1){
                 game.setScreen(new GameOverScreen(game, settings, 1));

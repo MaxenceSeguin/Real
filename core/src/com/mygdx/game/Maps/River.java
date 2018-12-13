@@ -37,8 +37,7 @@ public class River implements InputProcessor, Screen {
 
         game = aGame;
 
-        tiledMap = new TiledMapPlus("river.tmx",
-                new String[] {"heart", "Rock"});
+        tiledMap = new TiledMapPlus("river.tmx", null);
 
         Gdx.input.setInputProcessor(this);
 
@@ -151,9 +150,6 @@ public class River implements InputProcessor, Screen {
         }
         if (keycode == Input.Keys.DOWN) {
             hero.setDy(-2);
-        }
-        if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
-            tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
         }
         if (keycode == Input.Keys.R) {
             settings.refresh(hero);

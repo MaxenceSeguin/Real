@@ -25,9 +25,6 @@ public class DungeonTransition2 implements InputProcessor, Screen {
     private SpriteBatch sb;
     private Hero hero;
 
-    private Image image;
-    private boolean draw;
-
     private Game game;
 
     private GameSettings settings;
@@ -144,13 +141,6 @@ public class DungeonTransition2 implements InputProcessor, Screen {
         if (keycode == Input.Keys.DOWN) {
             hero.setDy(-2);
         }
-        if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
-            tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
-        }
-        if (keycode == Input.Keys.L) {
-            camera.rotate(12);
-            //draw = true;
-        }
         if (keycode == Input.Keys.R) {
             game.setScreen(new JungleBridge(game, settings));
         }
@@ -168,9 +158,6 @@ public class DungeonTransition2 implements InputProcessor, Screen {
         }
         if (keycode == Input.Keys.UP || keycode == Input.Keys.DOWN) {
             hero.setDy(0);
-        }
-        if (keycode == Input.Keys.L) {
-            draw = false;
         }
         return false;
     }

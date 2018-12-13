@@ -7,18 +7,22 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.mygdx.game.GameControl;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
 import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
 import com.mygdx.game.TiledMapPlus;
 
-public class DungeonTransition4 implements Screen, InputProcessor {
-
-
+public class FuturisticTransition2 implements InputProcessor, Screen {
     private GameOrthoCamera camera;
 
     private TiledMapPlus tiledMap;
@@ -26,29 +30,36 @@ public class DungeonTransition4 implements Screen, InputProcessor {
     private SpriteBatch sb;
     private Hero hero;
 
-    private Image image;
-    private boolean draw;
-
     private Game game;
-
-    private GameInterface gameInterface;
 
     private GameSettings settings;
 
+    private GameInterface gameInterface;
 
-    public DungeonTransition4(Game aGame, GameSettings settings) {
+    private boolean teleport;
+
+    private TextureAtlas tele = new TextureAtlas(Gdx.files.internal("teleporterAnimation.atlas"));
+    private Animation teleAnim = new Animation(1f/20f,
+            tele.getRegions());
+    private float elapsedTime = 0;
+
+
+    public FuturisticTransition2(Game aGame, GameSettings settings) {
+
         this.settings = settings;
 
         game = aGame;
 
-        tiledMap = new TiledMapPlus("dungeon_corridor4.tmx", null);
+        tiledMap = new TiledMapPlus("Futuristic_maps/future_corridor_2.tmx", null);
 
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
-
-        hero = settings.hero;
-        hero.refresh(tiledMap);
+        hero = new Hero("Hero/robo/stand.png", tiledMap, 3,
+                "Hero/robo/right.atlas", "Hero/robo/left.atlas",
+                "Hero/robo/back.atlas", "Hero/robo/down.atlas");
+        /*hero = settings.hero;
+        hero.refresh(tiledMap);*/
 
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
@@ -78,25 +89,38 @@ public class DungeonTransition4 implements Screen, InputProcessor {
 
         hero.draw(sb);
 
-        nextLevelListener();
+        standingOnTeleporter();
+
+        GameControl.display(sb, (float)camera.bottomLeftCorner.getX(),
+                (float)camera.bottomLeftCorner.getY());
 
         sb.end();
     }
 
-    void nextLevelListener(){
-        if (hero.isInExitArea()) {
-            settings.refresh(hero);
-            game.setScreen(new JungleTransition1(game, settings));
-        }
-    }
-
     void colorManagement(){
-        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
+    private void standingOnTeleporter(){
+        int number = tiledMap.teleporters.length;
+        Rectangle obj = hero.sprite.getBoundingRectangle();
 
+        for (int i = 0; i < number; i++){
+            if (Intersector.overlaps(tiledMap.teleporters[i].getTeleporter1().getRectangle(), obj)){
+                hero.setIsOnTeleporter(i);
+                tiledMap.teleporters[i].setReadyForActivation(2);
+                return;
+            } else if (Intersector.overlaps(tiledMap.teleporters[i].getTeleporter2().getRectangle(), obj)) {
+                hero.setIsOnTeleporter(i);
+                tiledMap.teleporters[i].setReadyForActivation(1);
+                return;
+            } else {
+                hero.setIsOnTeleporter(-1);
+            }
+        }
+    }
 
 
 
@@ -145,8 +169,18 @@ public class DungeonTransition4 implements Screen, InputProcessor {
         if (keycode == Input.Keys.DOWN) {
             hero.setDy(-2);
         }
-        if (keycode == Input.Keys.R) {
-            game.setScreen(new JungleBridge(game, settings));
+        if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
+            tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.sprite, sb);
+            teleport = true;
+        } else {
+            teleport = false;
+        }
+        if (keycode == Input.Keys.D && hero.isInExitArea()){
+            settings.refresh(hero);
+            game.setScreen(new DungeonBridge(game, settings));
+        }
+        if (keycode == Input.Keys.ESCAPE){
+            GameControl.show = !GameControl.show;
         }
         return false;
     }
@@ -213,3 +247,4 @@ public class DungeonTransition4 implements Screen, InputProcessor {
         return false;
     }
 }
+

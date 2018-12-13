@@ -6,19 +6,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
 import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
 import com.mygdx.game.TiledMapPlus;
 
-public class DungeonTransition4 implements Screen, InputProcessor {
-
-
+public class FuturisticTransition1 implements InputProcessor, Screen {
     private GameOrthoCamera camera;
 
     private TiledMapPlus tiledMap;
@@ -26,29 +22,27 @@ public class DungeonTransition4 implements Screen, InputProcessor {
     private SpriteBatch sb;
     private Hero hero;
 
-    private Image image;
-    private boolean draw;
-
     private Game game;
-
-    private GameInterface gameInterface;
 
     private GameSettings settings;
 
+    private GameInterface gameInterface;
 
-    public DungeonTransition4(Game aGame, GameSettings settings) {
+
+    public FuturisticTransition1(Game aGame, GameSettings settings) {
+
         this.settings = settings;
 
         game = aGame;
 
-        tiledMap = new TiledMapPlus("dungeon_corridor4.tmx", null);
+        tiledMap = new TiledMapPlus("Futuristic_maps/future_corridor_1.tmx", null);
 
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
-
-        hero = settings.hero;
-        hero.refresh(tiledMap);
+        hero = new Hero("Hero/robo/stand.png", tiledMap, 3,
+                "Hero/robo/right.atlas", "Hero/robo/left.atlas",
+                "Hero/robo/back.atlas", "Hero/robo/down.atlas");
 
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
@@ -86,7 +80,7 @@ public class DungeonTransition4 implements Screen, InputProcessor {
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
-            game.setScreen(new JungleTransition1(game, settings));
+            game.setScreen(new FuturisticTransition2(game, settings));
         }
     }
 
@@ -95,9 +89,6 @@ public class DungeonTransition4 implements Screen, InputProcessor {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
-
-
-
 
 
     @Override

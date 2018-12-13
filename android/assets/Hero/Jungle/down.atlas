@@ -1,0 +1,19 @@
+
+down.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Jungle-positive-2
+  rotate: false
+  xy: 1, 1
+  size: 24, 43
+  orig: 24, 43
+  offset: 0, 0
+  index: -1
+Jungle-positive-3
+  rotate: false
+  xy: 27, 1
+  size: 24, 43
+  orig: 24, 43
+  offset: 0, 0
+  index: -1

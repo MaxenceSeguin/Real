@@ -181,13 +181,6 @@ public class DungeonMaze implements Screen, InputProcessor {
         if (keycode == Input.Keys.DOWN) {
             hero.setDy(-2);
         }
-        if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
-            tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
-        }
-        if (keycode == Input.Keys.L) {
-            camera.rotate(12);
-            //draw = true;
-        }
         if (keycode == Input.Keys.R) {
             settings.refresh(hero);
             game.setScreen(new JungleBridge(game, settings));

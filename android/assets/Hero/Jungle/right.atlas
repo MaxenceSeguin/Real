@@ -1,0 +1,33 @@
+
+right.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Jungle-right(left)-4
+  rotate: false
+  xy: 1, 1
+  size: 32, 43
+  orig: 32, 43
+  offset: 0, 0
+  index: -1
+Jungle-right(left)-2
+  rotate: false
+  xy: 35, 1
+  size: 31, 43
+  orig: 31, 43
+  offset: 0, 0
+  index: -1
+Jungle-right(left)-1
+  rotate: false
+  xy: 68, 1
+  size: 24, 43
+  orig: 24, 43
+  offset: 0, 0
+  index: -1
+Jungle-right(left)-3
+  rotate: false
+  xy: 94, 1
+  size: 24, 43
+  orig: 24, 43
+  offset: 0, 0
+  index: -1

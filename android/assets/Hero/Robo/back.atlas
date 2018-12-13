@@ -1,0 +1,26 @@
+
+back.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Space-back-1
+  rotate: false
+  xy: 1, 1
+  size: 25, 43
+  orig: 25, 43
+  offset: 0, 0
+  index: -1
+Space-back-2
+  rotate: false
+  xy: 28, 1
+  size: 25, 43
+  orig: 25, 43
+  offset: 0, 0
+  index: -1
+Space-back-3
+  rotate: false
+  xy: 55, 1
+  size: 25, 43
+  orig: 25, 43
+  offset: 0, 0
+  index: -1

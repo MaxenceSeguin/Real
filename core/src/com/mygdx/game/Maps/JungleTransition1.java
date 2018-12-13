@@ -144,9 +144,6 @@ public class JungleTransition1 implements InputProcessor, Screen {
         if (keycode == Input.Keys.DOWN) {
             hero.setDy(-2);
         }
-        if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
-            tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
-        }
         if (keycode == Input.Keys.R) {
             game.setScreen(new JungleBridge(game, settings));
         }

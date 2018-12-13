@@ -6,10 +6,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
 import com.mygdx.game.GameSettings;
@@ -24,9 +22,6 @@ public class JungleTransition4 implements InputProcessor, Screen {
 
     private SpriteBatch sb;
     private Hero hero;
-
-    private Image image;
-    private boolean draw;
 
     private Game game;
 
@@ -77,10 +72,6 @@ public class JungleTransition4 implements InputProcessor, Screen {
 
         hero.draw(sb);
 
-        if (draw) {
-            image.draw(sb, 1);
-        }
-
         nextLevelListener();
 
         sb.end();
@@ -89,7 +80,7 @@ public class JungleTransition4 implements InputProcessor, Screen {
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
-            game.setScreen(new JungleBridge(game, settings));
+            game.setScreen(new FuturisticTransition1(game, settings));
         }
     }
 
@@ -148,13 +139,6 @@ public class JungleTransition4 implements InputProcessor, Screen {
         if (keycode == Input.Keys.DOWN) {
             hero.setDy(-2);
         }
-        if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
-            tiledMap.teleporters[hero.getIsOnTeleporter()].teleportTo(hero.getSprite());
-        }
-        if (keycode == Input.Keys.L) {
-            camera.rotate(12);
-            //draw = true;
-        }
         if (keycode == Input.Keys.R) {
             game.setScreen(new JungleBridge(game, settings));
         }
@@ -172,9 +156,6 @@ public class JungleTransition4 implements InputProcessor, Screen {
         }
         if (keycode == Input.Keys.UP || keycode == Input.Keys.DOWN) {
             hero.setDy(0);
-        }
-        if (keycode == Input.Keys.L) {
-            draw = false;
         }
         return false;
     }

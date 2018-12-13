@@ -1,0 +1,26 @@
+
+back.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Jungle-back-1
+  rotate: false
+  xy: 1, 1
+  size: 24, 43
+  orig: 24, 43
+  offset: 0, 0
+  index: -1
+Jungle-back-2
+  rotate: false
+  xy: 27, 1
+  size: 24, 43
+  orig: 24, 43
+  offset: 0, 0
+  index: -1
+Jungle-back-3
+  rotate: false
+  xy: 53, 1
+  size: 24, 43
+  orig: 24, 43
+  offset: 0, 0
+  index: -1

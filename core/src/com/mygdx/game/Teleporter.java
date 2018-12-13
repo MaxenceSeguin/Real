@@ -1,6 +1,10 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 
 import java.awt.Rectangle;
@@ -10,9 +14,11 @@ public class Teleporter {
     private RectangleMapObject teleporter2;
     private int readyForActivation;
 
+
     public Teleporter(RectangleMapObject teleporter1, RectangleMapObject teleporter2){
         this.teleporter1 = teleporter1;
         this.teleporter2 = teleporter2;
+        System.out.println(teleporter1.getRectangle().x);
         readyForActivation = 0;
     }
 
@@ -44,10 +50,10 @@ public class Teleporter {
      * Teleports the Sprite given as parameters to the according teleporter location (the second one
      * if we are on the first one and vice versa)
      */
-    public void teleportTo(Sprite object){
+    public void teleportTo(Sprite object, SpriteBatch sb){
         if(readyForActivation == 1){
             object.setPosition(teleporter1.getRectangle().getX(), teleporter1.getRectangle().getY());
-        } else if (readyForActivation == 2){
+        } else if (readyForActivation == 2) {
             object.setPosition(teleporter2.getRectangle().getX(), teleporter2.getRectangle().getY());
         }
 

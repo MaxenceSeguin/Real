@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="14" nextobjectid="51">
+<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="14" nextobjectid="89">
  <tileset firstgid="1" name="Jungle" tilewidth="32" tileheight="32" tilecount="1024" columns="32">
   <image source="lpc-jungle/jungle.png" width="1024" height="1024"/>
  </tileset>
@@ -56,9 +56,6 @@
   <object id="10" x="127.273" y="87.8788">
    <point/>
   </object>
- </objectgroup>
- <objectgroup id="11" name="Next level">
-  <object id="9" x="1009.09" y="912.121" width="57.5758" height="145.455"/>
  </objectgroup>
  <objectgroup id="12" name="Platforms">
   <object id="27" x="-154.545" y="245.455">
@@ -125,6 +122,120 @@
    <point/>
   </object>
   <object id="50" x="1168" y="278">
+   <point/>
+  </object>
+  <object id="51" x="-489" y="600">
+   <point/>
+  </object>
+  <object id="52" x="1187.88" y="272.727">
+   <point/>
+  </object>
+  <object id="53" x="-480.303" y="623.303">
+   <point/>
+  </object>
+  <object id="54" x="1187.88" y="275.758">
+   <point/>
+  </object>
+  <object id="55" x="-470.394" y="646.515">
+   <point/>
+  </object>
+  <object id="56" x="1148.48" y="269.697">
+   <point/>
+  </object>
+  <object id="57" x="-459.394" y="667.788">
+   <point/>
+  </object>
+  <object id="58" x="1178.79" y="296.97">
+   <point/>
+  </object>
+  <object id="59" x="-449.424" y="686.121">
+   <point/>
+  </object>
+  <object id="60" x="1203.03" y="269.697">
+   <point/>
+  </object>
+  <object id="61" x="-439.515" y="704.364">
+   <point/>
+  </object>
+  <object id="62" x="1212.12" y="300">
+   <point/>
+  </object>
+  <object id="63" x="-420.485" y="736.727">
+   <point/>
+  </object>
+  <object id="64" x="1209.09" y="287.879">
+   <point/>
+  </object>
+  <object id="65" x="-429.485" y="721.939">
+   <point/>
+  </object>
+  <object id="66" x="1163.64" y="303.03">
+   <point/>
+  </object>
+  <object id="67" x="-413.455" y="753.182">
+   <point/>
+  </object>
+  <object id="68" x="1181.82" y="330.303">
+   <point/>
+  </object>
+  <object id="69" x="-401.758" y="771.242">
+   <point/>
+  </object>
+  <object id="70" x="1209.09" y="309.091">
+   <point/>
+  </object>
+  <object id="71" x="-390.424" y="788.727">
+   <point/>
+  </object>
+  <object id="72" x="1209.09" y="327.273">
+   <point/>
+  </object>
+  <object id="73" x="-382.424" y="805.879">
+   <point/>
+  </object>
+  <object id="74" x="1203.03" y="360.606">
+   <point/>
+  </object>
+  <object id="75" x="-372.242" y="821.121">
+   <point/>
+  </object>
+  <object id="76" x="1221.21" y="360.606">
+   <point/>
+  </object>
+  <object id="77" x="-362.545" y="839.758">
+   <point/>
+  </object>
+  <object id="78" x="1206.06" y="345.455">
+   <point/>
+  </object>
+  <object id="79" x="-325.758" y="904.364">
+   <point/>
+  </object>
+  <object id="80" x="1196.97" y="333.333">
+   <point/>
+  </object>
+  <object id="81" x="-345.697" y="871.515">
+   <point/>
+  </object>
+  <object id="82" x="1230.3" y="309.091">
+   <point/>
+  </object>
+  <object id="83" x="-355.03" y="858">
+   <point/>
+  </object>
+  <object id="84" x="1203.03" y="318.182">
+   <point/>
+  </object>
+  <object id="85" x="-335.152" y="887.758">
+   <point/>
+  </object>
+  <object id="86" x="1233.33" y="330.303">
+   <point/>
+  </object>
+  <object id="87" x="-314.667" y="921.333">
+   <point/>
+  </object>
+  <object id="88" x="1204" y="373.333">
    <point/>
   </object>
  </objectgroup>
@@ -350,8 +461,11 @@
   <object id="13" x="3.0303" y="581.818" width="330.303" height="730.303"/>
   <object id="14" x="0" y="433.333" width="172.727" height="151.515"/>
  </objectgroup>
+ <objectgroup id="11" name="Next level">
+  <object id="9" x="1009.09" y="912.121" width="57.5758" height="145.455"/>
+ </objectgroup>
  <objectgroup id="13" name="Death">
-  <object id="15" x="1021.21" y="233.333" width="115.152" height="609.091"/>
+  <object id="15" x="1021.21" y="233.333" width="115.152" height="653.091"/>
   <object id="16" x="-130.303" y="227.273" width="121.212" height="787.879"/>
   <object id="23" x="345.455" y="906.061" width="312.121" height="127.273"/>
  </objectgroup>

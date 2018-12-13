@@ -390,7 +390,7 @@ public class TestScreen implements Screen, InputProcessor {
             hero.setDy(-2);
         }
         if (keycode == Input.Keys.D && hero.getIsOnTeleporter() != -1){
-            teleporters[hero.getIsOnTeleporter()].teleportTo(heroSprite);
+            teleporters[hero.getIsOnTeleporter()].teleportTo(heroSprite, sb);
         }
         if (keycode == Input.Keys.L) {
             //draw = true;

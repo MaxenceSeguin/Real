@@ -36,6 +36,7 @@ public class TiledMapPlus {
     public Rectangle[] water;
     public Rectangle exitArea;
     public Rectangle backArea;
+    public Overgrowth[] overgrowth;
     public Rectangle[] dialogTriggeringBoxes;
     public float spawnX=0, spawnY=0;
     public ArrayList<InventoryItem> items;
@@ -51,6 +52,8 @@ public class TiledMapPlus {
 
     public Sprite[] rockSprite;
     public MovableObject[] rocks;
+
+    public boolean ready;
 
 
     public TiledMapPlus(String fileLocation, String object[]){
@@ -74,6 +77,9 @@ public class TiledMapPlus {
         getWater();
         getDialogBoxes();
         //getRocks();
+        getOvergrowth();
+        this.ready = true;
+        GameControl.show = false;
 
     }
 
@@ -202,6 +208,31 @@ public class TiledMapPlus {
         }
     }
 
+    private void getOvergrowth(){
+        MapLayer bridgesObjectLayer = tiledMap.getLayers().get("Overgrowth");
+        MapObjects objects;
+        try {
+            objects = bridgesObjectLayer.getObjects();
+        } catch (NullPointerException e) {
+            return;
+        }
+
+        int numberOfObject = objects.getCount();
+
+        overgrowth = new Overgrowth[numberOfObject];
+
+        int i;
+        int j;
+
+        for (i = 0; i < numberOfObject; i++) {
+
+            j = i+1;
+            String id = "Overgrowth " + j;
+            overgrowth[i] = new Overgrowth(((RectangleMapObject)objects.get(Integer.toString(j))).getRectangle(),
+                    (TiledMapTileLayer) tiledMap.getLayers().get(id));
+        }
+    }
+
 
     /**
      * This method initializes all the platform.
@@ -280,6 +311,7 @@ public class TiledMapPlus {
         try {
             objects = teleportersObjectLayer.getObjects();
         } catch (NullPointerException e) {
+            System.out.println("No teleporters layer");
             return;
         }
 
@@ -298,7 +330,7 @@ public class TiledMapPlus {
         i = 0;
 
         /* Create pair of teleporters (one with the next one so it has to be created
-         * accordingly in the TileMap */
+         * accordingly in the TileMap) */
         for (int j = 0; j < teleporters1.length; j+=2){
             Teleporter teleporter = new Teleporter(teleporters1[j], teleporters1[j+1]);
 
