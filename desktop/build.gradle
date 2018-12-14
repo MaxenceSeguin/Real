@@ -45,6 +45,8 @@ task afterEclipseImport(description: "Post processing after project generation",
         printer.print(classpath)
     }
 }
+
+
 dependencies {
     implementation 'com.badlogicgames.gdx:gdx-jnigen:1.9.9'
     implementation project(':gdx-video')

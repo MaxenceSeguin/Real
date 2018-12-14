@@ -244,10 +244,6 @@ public class DungeonMaze implements Screen, InputProcessor {
      * Called when a mouse button is pressed.
      */
     @Override public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector3 clickCoordinates = new Vector3(screenX,screenY,0);
-        Vector3 position = camera.unproject(clickCoordinates);
-        hero.getSprite().setPosition(position.x, position.y);
-        System.out.println(position.x + " " + position.y);
         return true;
     }
 

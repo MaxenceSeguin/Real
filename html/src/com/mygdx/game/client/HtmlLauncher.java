@@ -47,6 +47,36 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-                return new Introduction(new ScreenGame());
+                return new ApplicationListener() {
+                        @Override
+                        public void create() {
+
+                        }
+
+                        @Override
+                        public void resize(int width, int height) {
+
+                        }
+
+                        @Override
+                        public void render() {
+
+                        }
+
+                        @Override
+                        public void pause() {
+
+                        }
+
+                        @Override
+                        public void resume() {
+
+                        }
+
+                        @Override
+                        public void dispose() {
+
+                        }
+                };
         }
 }

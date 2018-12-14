@@ -11,6 +11,6 @@ eclipse.project {
 }
 
 dependencies {
-    implementation files('build/libs/gdx-video-desktop-1.0.jar')
+
     implementation files('gdx-video-desktop-natives.jar')
 }
