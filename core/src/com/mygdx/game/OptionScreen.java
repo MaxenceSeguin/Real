@@ -156,7 +156,7 @@ public class OptionScreen implements Screen, InputProcessor {
         if (clickedInside(screenX, screenY, back)){
             game.setScreen(new GameTitleScreen(game, settings));
         } else if (clickedInside(screenX, screenY, credits)) {
-            //show credits
+            game.setScreen(new CreditsScreen(game, settings));
         } else if (clickedInside(screenX, screenY, gmOn) || clickedInside(screenX, screenY, gmOff)){
             settings.gameMusic = !settings.gameMusic;
         } else if (clickedInside(screenX, screenY, seOn) || clickedInside(screenX, screenY, seOff)){

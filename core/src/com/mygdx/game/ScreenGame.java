@@ -17,7 +17,7 @@ import com.mygdx.game.Maps.JungleTransition1;
 
 public class ScreenGame extends Game {
     public void create () {
-        this.setScreen(new DungeonTransition1(this, new GameSettings()));
+        this.setScreen(new Introduction(this));
     }
 
     public void render () {
