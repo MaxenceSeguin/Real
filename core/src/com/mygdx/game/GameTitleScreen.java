@@ -8,18 +8,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Maps.DungeonTransition1;
-import com.mygdx.game.Maps.DungeonTransition3;
-import com.mygdx.game.Maps.TestScreen;
 
 public class GameTitleScreen implements InputProcessor, Screen {
 
@@ -127,7 +117,8 @@ public class GameTitleScreen implements InputProcessor, Screen {
 
     @Override
     public boolean keyUp(int keycode) {
-        game.setScreen(new DungeonTransition1(game, settings));
+        game.setScreen(new Beginning(game));
+        //dispose();
         return false;
     }
 
@@ -149,6 +140,7 @@ public class GameTitleScreen implements InputProcessor, Screen {
         float dy = camera.viewportHeight/Gdx.graphics.getHeight();
 
         if (clickedInside(screenX, screenY, optionButton)){
+            dispose();
             game.setScreen(new OptionScreen(game, settings));
         }
         return false;

@@ -58,6 +58,7 @@ public class Introduction implements Screen {
 
         if(videoLoaded) {
             if (!videoPlayer.render()) {
+                dispose();
                 game.setScreen(new GameTitleScreen(game));
             }
         }
@@ -94,7 +95,8 @@ public class Introduction implements Screen {
     @Override
     public void dispose() {
         // TODO Auto-generated method stub
-
+        videoPlayer.dispose();
+        stage.dispose();
     }
 
 }

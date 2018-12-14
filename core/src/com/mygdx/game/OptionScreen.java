@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.mygdx.game.Maps.TestScreen;
 
 
 public class OptionScreen implements Screen, InputProcessor {
@@ -136,7 +135,6 @@ public class OptionScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        game.setScreen(new TestScreen(game, settings));
         return false;
     }
 

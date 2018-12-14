@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.mygdx.game.GameControl;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
 import com.mygdx.game.GameOverScreen;
@@ -40,6 +42,8 @@ public class DungeonMaze implements Screen, InputProcessor {
 
     private Image torch = new Image (new Texture(Gdx.files.internal("torch.png")));
 
+    private Music ambiance;
+
 
     public DungeonMaze(Game aGame, GameSettings settings) {
         this.settings = settings;
@@ -59,10 +63,12 @@ public class DungeonMaze implements Screen, InputProcessor {
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
 
+        ambiance = Gdx.audio.newMusic(Gdx.files.internal("Sound Effects/dungeon_noise1.wav"));
+
     }
 
     @Override
-    public void show() {    }
+    public void show() {  ambiance.setLooping(true); ambiance.play();  }
 
     /**
      *  This methods renders the graphics and keep them updated.
@@ -88,7 +94,14 @@ public class DungeonMaze implements Screen, InputProcessor {
 
         gameInterface.setLight(hero.light);
 
+        if (hero.light == 0){
+            camera.showDialog("Dialog/TorchHintDialog.png", sb);
+        }
+
         gameInterface.refresh();
+
+        GameControl.display(sb, (float)camera.bottomLeftCorner.getX(),
+                (float)camera.bottomLeftCorner.getY());
 
         lastLevelListener();
         nextLevelListener();
@@ -100,6 +113,7 @@ public class DungeonMaze implements Screen, InputProcessor {
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
+            dispose();
             game.setScreen(new DungeonTransition4(game, settings));
         }
     }
@@ -107,6 +121,7 @@ public class DungeonMaze implements Screen, InputProcessor {
     void lastLevelListener(){
         if (hero.isInBackArea()){
             settings.refresh(hero);
+            dispose();
             game.setScreen(new DungeonTransition3(game, settings));
         }
     }
@@ -127,8 +142,10 @@ public class DungeonMaze implements Screen, InputProcessor {
     void deathManagement(){
         if (hero.deathManager()){
             if (hero.health == 0){
+                dispose();
                 game.setScreen(new GameOverScreen(game, settings, 1));
             } else {
+                dispose();
                 game.setScreen(new DungeonMaze(game, settings));
             }
         }
@@ -160,6 +177,8 @@ public class DungeonMaze implements Screen, InputProcessor {
     public void dispose() {
         sb.dispose();
         tiledMap.tiledMapRenderer.dispose();
+        ambiance.stop();
+        ambiance.dispose();
     }
 
 
@@ -182,8 +201,17 @@ public class DungeonMaze implements Screen, InputProcessor {
             hero.setDy(-2);
         }
         if (keycode == Input.Keys.R) {
-            settings.refresh(hero);
-            game.setScreen(new JungleBridge(game, settings));
+            if (hero.health == 1){
+                game.setScreen(new GameOverScreen(game, settings, 1));
+            } else {
+                settings.hero.health--;
+                settings.hero.light = 0;
+                dispose();
+                game.setScreen(new DungeonMaze(game, settings));
+            }
+        }
+        if (keycode == Input.Keys.ESCAPE){
+            GameControl.show = !GameControl.show;
         }
         return false;
     }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mygdx.game.Maps.DungeonTransition1;
+import com.mygdx.game.Maps.FuturisticTransition1;
 import com.mygdx.game.Maps.JungleTransition1;
 import com.mygdx.game.Maps.JungleTransition4;
 
@@ -110,7 +111,7 @@ public class GameOverScreen implements InputProcessor, Screen {
             } else if (level == 2){
                 game.setScreen(new JungleTransition1(game, settings));
             } else if (level == 3){
-                game.setScreen(new JungleTransition4(game, settings));
+                game.setScreen(new FuturisticTransition1(game, settings));
             }
         }
         if (clickedInside(screenX, screenY, quit)){

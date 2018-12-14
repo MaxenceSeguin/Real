@@ -8,8 +8,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.game.GameControl;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
+import com.mygdx.game.GameOverScreen;
 import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
 import com.mygdx.game.TiledMapPlus;
@@ -72,6 +74,11 @@ public class FuturisticTransition1 implements InputProcessor, Screen {
 
         hero.draw(sb);
 
+        camera.showDialog("Dialog/FutureStartDialog.png", sb);
+
+        GameControl.display(sb, (float)camera.bottomLeftCorner.getX(),
+                (float)camera.bottomLeftCorner.getY());
+
         nextLevelListener();
 
         sb.end();
@@ -80,6 +87,7 @@ public class FuturisticTransition1 implements InputProcessor, Screen {
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
+            dispose();
             game.setScreen(new FuturisticTransition2(game, settings));
         }
     }
@@ -137,7 +145,17 @@ public class FuturisticTransition1 implements InputProcessor, Screen {
             hero.setDy(-2);
         }
         if (keycode == Input.Keys.R) {
-            game.setScreen(new JungleBridge(game, settings));
+            if (hero.health == 1){
+                dispose();
+                game.setScreen(new GameOverScreen(game, settings, 3));
+            } else {
+                settings.hero.health--;
+                dispose();
+                game.setScreen(new FuturisticTransition1(game, settings));
+            }
+        }
+        if (keycode == Input.Keys.ESCAPE){
+            GameControl.show = !GameControl.show;
         }
         return false;
     }

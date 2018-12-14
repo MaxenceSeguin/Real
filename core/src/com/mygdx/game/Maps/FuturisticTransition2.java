@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mygdx.game.GameControl;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
+import com.mygdx.game.GameOverScreen;
 import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
 import com.mygdx.game.TiledMapPlus;
@@ -55,11 +56,9 @@ public class FuturisticTransition2 implements InputProcessor, Screen {
         Gdx.input.setInputProcessor(this);
 
         sb = new SpriteBatch();
-        hero = new Hero("Hero/robo/stand.png", tiledMap, 3,
-                "Hero/robo/right.atlas", "Hero/robo/left.atlas",
-                "Hero/robo/back.atlas", "Hero/robo/down.atlas");
-        /*hero = settings.hero;
-        hero.refresh(tiledMap);*/
+
+        hero = settings.hero;
+        hero.refresh(tiledMap);
 
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
@@ -177,10 +176,20 @@ public class FuturisticTransition2 implements InputProcessor, Screen {
         }
         if (keycode == Input.Keys.D && hero.isInExitArea()){
             settings.refresh(hero);
-            game.setScreen(new DungeonBridge(game, settings));
+            game.setScreen(new FuturisticTransition3(game, settings));
         }
         if (keycode == Input.Keys.ESCAPE){
             GameControl.show = !GameControl.show;
+        }
+        if (keycode == Input.Keys.R){
+            if (hero.health == 1){
+                dispose();
+                game.setScreen(new GameOverScreen(game, settings, 3));
+            } else {
+                settings.hero.health--;
+                dispose();
+                game.setScreen(new FuturisticTransition2(game, settings));
+            }
         }
         return false;
     }

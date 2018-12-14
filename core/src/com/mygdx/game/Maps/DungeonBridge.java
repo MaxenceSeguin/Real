@@ -5,11 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.game.GameControl;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
 import com.mygdx.game.GameOverScreen;
@@ -36,6 +38,8 @@ public class DungeonBridge implements InputProcessor, Screen {
     private Animation explosion;
     private float elapsedTime;
 
+    private Music ambiance;
+
 
     public DungeonBridge(Game aGame, GameSettings settings) {
         this.settings = settings;
@@ -57,6 +61,8 @@ public class DungeonBridge implements InputProcessor, Screen {
 
         TextureAtlas textureAtlasRight = new TextureAtlas(Gdx.files.internal("explosion1.atlas"));
         explosion = new Animation(1f/15f, textureAtlasRight.getRegions());
+
+        ambiance = Gdx.audio.newMusic(Gdx.files.internal("Sound Effects/dungeon_noise1.wav"));
 
     }
 
@@ -88,6 +94,9 @@ public class DungeonBridge implements InputProcessor, Screen {
 
         gameInterface.refresh();
 
+        GameControl.display(sb, (float)camera.bottomLeftCorner.getX(),
+                (float)camera.bottomLeftCorner.getY());
+
         sb.end();
     }
 
@@ -116,6 +125,7 @@ public class DungeonBridge implements InputProcessor, Screen {
 
     void nextLevelListener(){
         if (hero.isInExitArea()) {
+            dispose();
             settings.refresh(hero);
             game.setScreen(new DungeonTransition3(game, settings));
         }
@@ -155,6 +165,8 @@ public class DungeonBridge implements InputProcessor, Screen {
     public void dispose() {
         sb.dispose();
         tiledMap.tiledMapRenderer.dispose();
+        ambiance.stop();
+        ambiance.dispose();
     }
 
 
@@ -181,9 +193,13 @@ public class DungeonBridge implements InputProcessor, Screen {
                 game.setScreen(new GameOverScreen(game, settings, 1));
             } else {
                 settings.hero.health--;
-                settings.hero.machete = 0;
+                settings.hero.light = 0;
+                dispose();
                 game.setScreen(new DungeonBridge(game, settings));
             }
+        }
+        if (keycode == Input.Keys.ESCAPE){
+            GameControl.show = !GameControl.show;
         }
 
         return false;

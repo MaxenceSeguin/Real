@@ -5,11 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.mygdx.game.GameControl;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
 import com.mygdx.game.GameOverScreen;
@@ -32,6 +34,8 @@ public class JungleMaze implements InputProcessor, Screen {
 
     private GameSettings settings;
 
+    private Music ambiance;
+
 
     public JungleMaze(Game aGame, GameSettings settings) {
         this.settings = settings;
@@ -51,10 +55,12 @@ public class JungleMaze implements InputProcessor, Screen {
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
 
+        ambiance = Gdx.audio.newMusic(Gdx.files.internal("Sound Effects/jungle_ambience_looped.wav"));
+
     }
 
     @Override
-    public void show() {    }
+    public void show() {  ambiance.play();ambiance.setLooping(true);  }
 
     /**
      *  This methods renders the graphics and keep them updated.
@@ -80,20 +86,33 @@ public class JungleMaze implements InputProcessor, Screen {
         nextLevelListener();
         lastLevelListener();
 
+        if (hero.machete == 0){
+            camera.showDialog("Dialog/MacheteHintDialog.png", sb);
+        }
+
+        GameControl.display(sb, (float)camera.bottomLeftCorner.getX(),
+                (float)camera.bottomLeftCorner.getY());
+
         sb.end();
     }
 
     void nextLevelListener(){
         if (hero.isInExitArea()) {
             settings.refresh(hero);
+            dispose();
             game.setScreen(new JungleTransition3(game, settings));
         }
     }
 
     void lastLevelListener(){
-        if (hero.isInBackArea()) {
-            settings.refresh(hero);
-            game.setScreen(new JungleTransition2(game, settings));
+        try{
+            if (hero.isInBackArea()) {
+                settings.refresh(hero);
+                dispose();
+                game.setScreen(new JungleTransition2(game, settings));
+            }
+        } catch (NullPointerException e){
+
         }
     }
 
@@ -106,8 +125,10 @@ public class JungleMaze implements InputProcessor, Screen {
     void deathManagement(){
         if (hero.deathManager()){
             if (hero.health == 0){
+                dispose();
                 game.setScreen(new GameOverScreen(game, settings, 2));
             } else {
+                dispose();
                 game.setScreen(new JungleMaze(game, settings));
             }
         }
@@ -147,6 +168,8 @@ public class JungleMaze implements InputProcessor, Screen {
     public void dispose() {
         sb.dispose();
         tiledMap.tiledMapRenderer.dispose();
+        ambiance.stop();
+        ambiance.dispose();
     }
 
 
@@ -170,6 +193,20 @@ public class JungleMaze implements InputProcessor, Screen {
         }
         if (keycode == Input.Keys.C && hero.machete == 1){
             cutOvergrowth();
+        }
+        if (keycode == Input.Keys.R){
+            if (hero.health == 1){
+                dispose();
+                game.setScreen(new GameOverScreen(game, settings, 2));
+            } else {
+                settings.hero.health--;
+                settings.hero.light = 0;
+                dispose();
+                game.setScreen(new JungleMaze(game, settings));
+            }
+        }
+        if (keycode == Input.Keys.ESCAPE){
+            GameControl.show = !GameControl.show;
         }
         return false;
     }

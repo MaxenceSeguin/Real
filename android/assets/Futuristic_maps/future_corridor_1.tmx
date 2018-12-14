@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="94">
- <tileset firstgid="1" source="futuretile1.tsx"/>
- <tileset firstgid="441" source="futuretile2.tsx"/>
+<map version="1.2" tiledversion="1.2.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="95">
+ <tileset firstgid="1" name="futuretile1" tilewidth="32" tileheight="32" tilecount="440" columns="20">
+  <image source="/space-blks-1.034.png" width="640" height="704"/>
+ </tileset>
+ <tileset firstgid="441" name="futuretile2" tilewidth="32" tileheight="32" tilecount="81" columns="9">
+  <image source="/tileset_complet.png" width="300" height="300"/>
+ </tileset>
  <layer id="1" name="Tile Layer 1" width="32" height="32">
   <data encoding="base64" compression="zlib">
    eJydV8FxwzAMk8dxdrB3UBZpd2gH6Ry9doTs1PhqXBAUJKU+eD5TkikBIEXfltZuYpfW2tqenxj7XNrHevphun7GNrMeMff2O76b+BuNz8Y8voF1PTgD9nCMX9tj3WFX8vN4FOsq+z+st0eclb7v9nCR72f8uPhuPmJuQXz4MZ952M9zd/K/3P2vyzMv0RNzFX/E3ymm44HPBv/b/f19+cuLe2Ku4s98uT0o3tBihG/1RHynFz6r8qA6djjzNyMeOD6wZ32r3pgLxb/KAxjP1/gwxMNccMEG/bk84G9FOaX4A3PGB/Fxrn6OZfqueInwxx6cXrvMiea5vMieTn+Kj6snTvdufQ/8ij9rINJxpXv1s0arPFANZrhlumd/VP91ncv/rG5EdUf9fB7lE5pSv+KZ1ZUK/4rPY2xvY/p3uh3B3/HheGGNzNTtEfyr+zmq0/zOeM/gzzi7e0Et62u6rJ3R/8w9MdpPKh9al5TrLJ+yujJaxxHf9aWj9/Ro3Xb54OqW4wu9V8TTf/sZaLK6F9B7Ofz53q34Zxw5R7J643hALMVF79yR+lP9F0T8HmOMi/ak2udE9Qfnn7k3EAtrNf+038nqT4Zzxh/31/jvg3G/U9Uf3cNIPnD+8DpYVL+r/6+RPila4+qL2hfly3eQI1Hd4Tk/OgMT4Q==
@@ -101,5 +105,8 @@
  </objectgroup>
  <objectgroup id="4" name="Next level">
   <object id="93" x="158" y="-26" width="175" height="28"/>
+ </objectgroup>
+ <objectgroup id="5" name="Dialog">
+  <object id="94" x="446.667" y="822" width="128" height="200.667"/>
  </objectgroup>
 </map>

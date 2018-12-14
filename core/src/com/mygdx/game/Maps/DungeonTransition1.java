@@ -4,13 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.mygdx.game.GameControl;
 import com.mygdx.game.GameInterface;
 import com.mygdx.game.GameOrthoCamera;
+import com.mygdx.game.GameOverScreen;
 import com.mygdx.game.GameSettings;
 import com.mygdx.game.Hero;
 import com.mygdx.game.TiledMapPlus;
@@ -33,6 +36,8 @@ public class DungeonTransition1 implements Screen, InputProcessor {
 
     private GameSettings settings;
 
+    private Music ambiance;
+
 
     public DungeonTransition1(Game aGame, GameSettings settings) {
         this.settings = settings;
@@ -45,19 +50,22 @@ public class DungeonTransition1 implements Screen, InputProcessor {
 
         sb = new SpriteBatch();
 
-        hero = new Hero("hero1.png", tiledMap, 3,
-                "anim1.atlas", "anim1.atlas",
-                "anim1.atlas", "anim1.atlas");
+        hero = new Hero("Hero/Suit/stand.png", tiledMap, 3,
+                "Hero/Suit/right.atlas", "Hero/Suit/left.atlas",
+                "Hero/Suit/back.atlas", "Hero/Suit/down.atlas");
         hero.refresh(tiledMap);
 
         camera = new GameOrthoCamera(hero.getSprite(), tiledMap);
 
         gameInterface = new GameInterface(hero, sb, camera, tiledMap);
 
+        ambiance = Gdx.audio.newMusic(Gdx.files.internal("Sound Effects/dungeon_noise1.wav"));
+
+
     }
 
     @Override
-    public void show() {    }
+    public void show() { ambiance.play(); ambiance.setLooping(true);   }
 
     /**
      *  This methods renders the graphics and keep them updated.
@@ -79,6 +87,11 @@ public class DungeonTransition1 implements Screen, InputProcessor {
 
         hero.draw(sb);
 
+        camera.showDialog("Dialog/DungeonStartDialog.png", sb);
+
+        GameControl.display(sb, (float)camera.bottomLeftCorner.getX(),
+                (float)camera.bottomLeftCorner.getY());
+
         nextLevelListener();
 
         sb.end();
@@ -86,6 +99,7 @@ public class DungeonTransition1 implements Screen, InputProcessor {
 
     void nextLevelListener(){
         if (hero.isInExitArea()) {
+            dispose();
             settings.refresh(hero);
             game.setScreen(new DungeonTransition2(game, settings));
         }
@@ -125,6 +139,8 @@ public class DungeonTransition1 implements Screen, InputProcessor {
     public void dispose() {
         sb.dispose();
         tiledMap.tiledMapRenderer.dispose();
+        ambiance.stop();
+        ambiance.dispose();
     }
 
 
@@ -147,7 +163,17 @@ public class DungeonTransition1 implements Screen, InputProcessor {
             hero.setDy(-2);
         }
         if (keycode == Input.Keys.R) {
-            game.setScreen(new JungleBridge(game, settings));
+            if (hero.health == 1){
+                game.setScreen(new GameOverScreen(game, settings, 1));
+            } else {
+                settings.hero.health--;
+                settings.hero.light = 0;
+                dispose();
+                game.setScreen(new DungeonTransition1(game, settings));
+            }
+        }
+        if (keycode == Input.Keys.ESCAPE){
+            GameControl.show = !GameControl.show;
         }
         return false;
     }
